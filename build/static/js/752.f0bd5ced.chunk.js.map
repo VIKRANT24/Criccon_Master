@@ -1,0 +1,1 @@
+{"version":3,"file":"static/js/752.f0bd5ced.chunk.js","mappings":"yIAIA,UAJiB,WACb,OAAOA,EAAAA,EAAAA,KAAA,MAAAC,SAAI,iBACf,C","sources":["pages/auth/register/register.component.js"],"sourcesContent":["const Register = ()=>{\r\n    return <h1>Register Page</h1>\r\n}\r\n\r\nexport default Register;"],"names":["_jsx","children"],"sourceRoot":""}

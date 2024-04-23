@@ -1,0 +1,2 @@
+"use strict";(self.webpackChunktennis_cricket=self.webpackChunktennis_cricket||[]).push([[752],{7752:function(e,n,t){t.r(n);var c=t(184);n.default=function(){return(0,c.jsx)("h1",{children:"Register Page"})}}}]);
+//# sourceMappingURL=752.f0bd5ced.chunk.js.map

@@ -1,0 +1,32 @@
+export const LIVE_MATCH_DATA = {
+    totalRuns : 0,
+    wicketCount : 0,
+    totalOvers: 0,
+    crr:0,
+    currentRunStack:[],
+    team_1 : '',
+    team_2:'',
+    maxOver:'',
+    batting:'',
+    scoring_team:'',
+    chessing_team:'',
+    tossWon:'',
+    electedTo:'',
+    STRIKER:'',
+    NSTRIKER:'',
+    batter1:{},
+    batter2:{},
+    CBOWLER:'',
+    CBOWLER_ID : '',
+    bowler : {},
+    bowlers:[],
+    currentBowlerData : {},
+    recentOvers:[],
+    extras:{},
+    match:{},
+    teamA:[],
+    teamB:[],
+    strikerFlag : false
+
+
+}
