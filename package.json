@@ -16,6 +16,7 @@
     "react-circular-progressbar": "^2.1.0",
     "react-countup": "^6.4.2",
     "react-dom": "^18.2.0",
+    "react-fullscreen-loading": "^0.0.4",
     "react-lottie-loader": "^1.1.0",
     "react-paginate": "^8.2.0",
     "react-redux": "^8.0.5",
@@ -51,11 +52,11 @@
     ]
   },
   "devDependencies": {
-    "@types/jest": "^29.5.7",
-    "@types/node": "^20.8.10",
-    "@types/react": "^18.2.36",
-    "@types/react-dom": "^18.2.14",
+    "@types/jest": "^29.5.12",
+    "@types/node": "^20.11.17",
+    "@types/react": "^18.2.55",
+    "@types/react-dom": "^18.2.19",
     "sass": "^1.62.1",
-    "typescript": "^5.2.2"
+    "typescript": "^5.3.3"
   }
 }
