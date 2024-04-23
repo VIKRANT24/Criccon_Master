@@ -89,27 +89,112 @@ const EditMatches = (props) => {
      const fetchMatchTeamPlayers = (item) => {
   
         let params = {
-            tour_id : sessionStorage.getItem('tournamentId'),
-            team_one : item.team1_name,
-            team_two : item.team2_name
-    
+            match_id:item.match_id
         }
-    
+        let live_match_data ={}
+        live_match_data.match_id = item.match_id;
         ApiService.postData(API_NAME.FETCH_MATCH_PLAYERS,params).then(
            (resData) => {
               debugger;
               if (resData.statusCode === '00') {
-                let live_match_data ={}
                 if (Object.keys(resData.data).length != 0){
-                    live_match_data.teamA = resData.data.team1_data.playerData;                    
-                    live_match_data.teamB = resData.data.team2_data.playerData;    
-                    live_match_data.team_1 = resData.data.team1_data.team_name; 
-                    live_match_data.team_2 = resData.data.team2_data.team_name;      
+                    let teamData1 = []
+                    let teamData2 = []
+
+                    let teamData1_final = []
+                    let teamData2_final = []
+
+                    teamData1 = resData.data.team_one
+                    teamData2 = resData.data.team_two
+
+                    teamData1.forEach(element => {
+                        var is_Batting = element.is_Batting
+                        var player_id = element.player_id
+                        var player_name = element.player_name.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();})
+                        var team_id = element.team_id
+
+                        teamData1_final.push({is_Batting,player_id,player_name,team_id})
+                    });
+
+                    teamData2.forEach(element => {
+                        var is_Batting = element.is_Batting
+                        var player_id = element.player_id
+                        var player_name = element.player_name.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();})
+                        var team_id = element.team_id
+
+                        teamData2_final.push({is_Batting,player_id,player_name,team_id})
+                    });
+
+                    // localStorage.setItem('TEAM_A_INITIAL',JSON.stringify(resData.data.team1_data.playerData));
+                    // localStorage.setItem('TEAM_B_INITIAL',JSON.stringify(resData.data.team2_data.playerData));  
+
+                    localStorage.setItem('TEAM_A_INITIAL',JSON.stringify(teamData1_final));
+                    localStorage.setItem('TEAM_B_INITIAL',JSON.stringify(teamData2_final));  
+
+                    live_match_data.team_1 = item.team1_name.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();}); 
+                    live_match_data.team_2 = item.team2_name.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});    
+                    
+                    localStorage.setItem('team_A',item.team1_name.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();}))
+                    localStorage.setItem('team_B',item.team2_name.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();}))
+
+                    localStorage.setItem('ground_id',item.ground_name.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();}))
+                    localStorage.setItem('place_id',item.place.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();}))
+                   
+                    localStorage.setItem('MAXOVER',item.no_of_overs)
+                    
                 }
                 localStorage.setItem('LIVE_MATCH_DATA',JSON.stringify(live_match_data));
-                history('/home/edit-score');
+                fetchMatchScore(item.match_id);
                // Alert('00', resData.message)
                  console.log('===================================')
+              }
+              else {
+               // Alert('01', resData.message)
+                 console.log('==================================')
+              }
+    
+    
+           }
+        ).catch((err) => {
+           console.log('==================================')
+    
+        });
+     }
+     const fetchMatchScore = (id) => {
+  
+        let params = {
+          match_id : id
+    
+        }
+    
+        ApiService.postData(API_NAME.FETCH_MATCH_SCORE,params).then(
+           (resData) => {
+              if (resData.statusCode === '00') {
+            
+                if(resData.data.length>0)
+                {
+                    localStorage.setItem('LIVE_MATCH_DATA',JSON.stringify(resData.data[0]));
+
+                    let data =  JSON.parse(localStorage.getItem('LIVE_MATCH_DATA'))
+                    data.match_score.team_1 =  localStorage.getItem('team_A')
+                    data.match_score.team_2 =  localStorage.getItem('team_B')
+                    data.match_score.ground_id = localStorage.getItem('ground_id')
+                    data.match_score.place_id = localStorage.getItem('place_id')
+                    localStorage.setItem('MATCH_STATUS',data.match_score.matchStatus)
+                    
+                    localStorage.setItem('LIVE_MATCH_DATA',JSON.stringify(data.match_score));
+                    
+                    history('/home/edit-score');
+                     console.log('==================================='+resData)
+                }
+                else
+                {
+                
+                    localStorage.setItem('MATCH_STATUS','STARTED')
+                    history('/home/edit-score');
+                     console.log('==================================='+resData)
+                }
+               
               }
               else {
                // Alert('01', resData.message)
@@ -132,9 +217,10 @@ const EditMatches = (props) => {
                 <div class="iq-badges text-left">
                     <div class="badges-icon">
                         <img class="avatar-80 rounded" src="https://templates.iqonic.design/hope-ui/pro/html/social-app/assets/images/profile-badges/01.png" alt="" loading="lazy" />
-                        {item.match_status === undefined || item.match_status === null?<span class="badge bg-soft-success rounded-pill p-2 text-success" style={{ float: 'right', marginTop: '45px' }}>Completed</span>:null}
+                        {item.match_status.split(',')[0].toLowerCase() === 'completed'?<span class="badge bg-soft-success rounded-pill p-2 text-success" style={{ float: 'right', marginTop: '45px' }}>Completed</span>:null}
                         {item.match_status === 'Scheduled'?<span class="badge bg-soft-warning rounded-pill p-2 text-warning" style={{ float: 'right', marginTop: '45px' }}>Upcoming</span>:null}
-                        {item.match_status === 'started'?<span class="badge bg-soft-danger rounded-pill p-2 text-danger" style={{ float: 'right', marginTop: '45px' }}>Ongoing</span>:null}
+                        {item.match_status.toLowerCase() === 'started'?<span class="badge bg-soft-danger rounded-pill p-2 text-danger" style={{ float: 'right', marginTop: '45px' }}>Ongoing</span>:null}
+                        {item.match_status.split(',')[0].toLowerCase() === 'live'?<span class="blink_me badge bg-soft-danger rounded-pill p-2 text-danger" style={{ float: 'right', marginTop: '45px' }}>Live</span>:null}
                     </div>
                     <h5 class="mb-2">Match No.{idx+1}</h5>
                     <p class="text-primary"><label style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', width: '60%' }}>{(item.team1_name).replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();})}</label><div class="text-info">vs</div> <label style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', width: '60%' }}>{(item.team2_name).replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();})}</label></p>
@@ -143,9 +229,10 @@ const EditMatches = (props) => {
                     </div>
                 </div>
             </div>
-            <div class="card-footer text-light bg-primary">
-               {"Started at " +item.date_time}
-            </div>
+            {/* <div class="card-footer text-light bg-primary">{"Started at " +item.date_time}</div> */}
+            {item.match_status === 'Scheduled'?   <div class="card-footer text-light bg-primary">{"Scheduled at " +item.date_time}</div>:''}
+            {item.match_status.toLowerCase() === 'started' ?   <div class="card-footer text-light bg-primary">{"Started at " +item.date_time}</div>:''}
+            {item.match_status.split(',')[0].toLowerCase()=== 'live' || item.match_status.split(',')[0].toLowerCase()=== 'completed'  ?   <div class="card-footer text-light bg-primary ">{item.match_status.split(',')[1]}</div>:''}
         </div>
         )
      })

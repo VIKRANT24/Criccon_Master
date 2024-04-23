@@ -8,8 +8,11 @@
 }
 
 .bgcolor{
-   background: linear-gradient(#015C99,#B1D156);
+  // background: linear-gradient(#015C99,#B1D156);
    // background: linear-gradient( #4568dc, #b06ab3)
+   background: url(./../../../assets/images/auth/lgbg.jpg);
+  background-repeat: no-repeat;
+  background-size: cover;
 }
 
 .bgcolor .dark{

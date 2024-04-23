@@ -52,48 +52,84 @@ const MyTournamentList =(props,{navigation}) =>{
    .map((item, idx) => {
       return (
          <tr key={idx}>
-         <td>{idx}</td>
-          <td>{item.mainTournamentid}</td>
+         <td>{idx+1}</td>
+          <td>{item.tour_unq_id}</td>
      
-          <td>
-          <td>{item.TournamentName}</td>
-          </td>
+      
+          <td>{item.tour_name}</td>
+          <td>{item.place}</td>
+         
        </tr>
       )
    })
 
-   const fetchMyTournament = () => {
-      console.log('Component : My Tournament List')
+   // const fetchMyTournament = () => {
+   //    console.log('Component : My Tournament List')
      
+   //    store.dispatch(loadingToggleAction(true))
+   //    let data = {
+   //      user_id : 'Yfsjt4BrMYaDguXsHYZJ1UIgPmA2'//sessionStorage.getItem('user_uid')
+   //    }
+   //    console.log("Request : " + JSON.stringify(data))
+   //    ApiService.postData(API_NAME.MY_TOURNAMENT,data).then(
+   //       (resData) => {
+   
+   //          if (resData.statusCode === '00') {
+   //             store.dispatch(loadingToggleAction(false))
+   //             Alert('00', resData.message)
+   //             console.log('==================================')
+   //             setAdmins(resData.data)
+   //          }
+   //          else {
+   //             store.dispatch(loadingToggleAction(false))
+   //             Alert('01', resData.message)
+   //             console.log('==================================')
+   //          }
+   
+   
+   //       }
+   //    ).catch((err) => {
+   //       store.dispatch(loadingToggleAction(false))
+   //       Alert('01', err.message)
+   //       console.log('==================================')
+   
+   //    });
+   // }
+
+   const fetchTournaments = (tag) => {
       store.dispatch(loadingToggleAction(true))
-      let data = {
-        user_id : 'Yfsjt4BrMYaDguXsHYZJ1UIgPmA2'//sessionStorage.getItem('user_uid')
+      console.log('Component : Tournament List')
+      console.log("Request : Post")
+      const params = {
+          user_id :sessionStorage.getItem('user_uid')
       }
-      console.log("Request : " + JSON.stringify(data))
-      ApiService.postData(API_NAME.MY_TOURNAMENT,data).then(
-         (resData) => {
-   
-            if (resData.statusCode === '00') {
-               store.dispatch(loadingToggleAction(false))
-               Alert('00', resData.message)
-               console.log('==================================')
-               setAdmins(resData.data)
-            }
-            else {
-               store.dispatch(loadingToggleAction(false))
-               Alert('01', resData.message)
-               console.log('==================================')
-            }
-   
-   
-         }
+      ApiService.postData(API_NAME.TOURNAMENT_LIST,params).then(
+          (resData) => {
+
+              if (resData.statusCode === '00') {
+                  store.dispatch(loadingToggleAction(false))
+                  if (tag)
+                  Alert('00', resData.message)
+                  console.log('===================================')
+                  setAdmins(resData.data)
+                 // setUsers(resData.userList)
+                  //sessionStorage.setItem("all_tournament",JSON.stringify(resData.data))
+              }
+              else {
+                  store.dispatch(loadingToggleAction(false))
+                  Alert('01', 'No record found. Please try again later.')
+                  console.log('==================================')
+              }
+
+
+          }
       ).catch((err) => {
-         store.dispatch(loadingToggleAction(false))
-         Alert('01', err.message)
-         console.log('==================================')
-   
+          store.dispatch(loadingToggleAction(false))
+          Alert('01', err.message)
+          console.log('==================================')
+
       });
-   }
+  }
    
    const handleSearchChange = (e) => {
       console.log(e.target.value)
@@ -102,7 +138,8 @@ const MyTournamentList =(props,{navigation}) =>{
    }
    
    React.useEffect(() => {
-      fetchMyTournament();
+     // fetchMyTournament();
+     fetchTournaments()
    }, [])
 
   return(
@@ -125,8 +162,10 @@ const MyTournamentList =(props,{navigation}) =>{
                            <thead>
                               <tr className="ligth">
                               <th>Sr</th>
-                                 <th>Id</th>
+                                 <th>Unique Id</th>
                                  <th min-width= "100px">Tournament Name</th>
+
+                                 <th min-width= "100px">Place</th>
                               </tr>
                            </thead>
                            <tbody>

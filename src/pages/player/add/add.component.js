@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { Row, Col, Form, Button } from 'react-bootstrap'
 import Card from '../../../components/card/card'
 import Alert from '../../../components/toast/toast'
@@ -12,14 +12,15 @@ import Spinner from '../../../components/loader/loader'
 import { connect } from 'react-redux'
 import { useNavigate } from 'react-router-dom';
 
+
 const PlayerAdd = (props) => {
    const [value, setValue] = React.useState('');
-   const [role, setRole] = React.useState('');
-   const [bowlingStyle, setBowlingStyle] = React.useState('');
-   const [battingStyle, setBattingStyle] = React.useState('');
    const [img, setImg] = React.useState('');
-
-
+   const [playerPlace, setPlayerPlace] = React.useState('');
+   const autoCompleteRef = React.useRef();
+   const inputRef = React.useRef();
+   const autoCompleteRefAdd = React.useRef();
+   const inputRefAdd = React.useRef();
    const history = useNavigate();
 
    const onAddPlayer = (event) => {
@@ -29,17 +30,15 @@ const PlayerAdd = (props) => {
          email= value.email[0];
       }
       let data = {
-         playername: value.playername[0],
-         playermobile: value.mobileno[0],
-         dob: value.dob[0],
-         playerrole: role,
-         email: email,
-         imgdata: img,
-         batting: battingStyle,
-         bowling: bowlingStyle,
-         country:value.country[0],
-         state:value.state[0],
-         city:value.city[0]
+         player_name: value.playername[0],
+         player_mobile: value.mobileno[0],
+         player_dob: value.dob[0],
+         player_email: email,
+         player_logo: '',
+         player_place:playerPlace,
+         tour_id:0,
+         team_id:0,
+         is_selected:0
       }
       console.log(data);
       createPlayer(data);
@@ -92,7 +91,28 @@ const PlayerAdd = (props) => {
         }
       })
     }
+    useEffect(() => {
+      autoCompleteRef.current = new window.google.maps.places.Autocomplete(
+          inputRef.current,
+          { types: ['(cities)'] }
+      );
 
+      autoCompleteRef.current.addListener("place_changed", async function () {
+          const place = await autoCompleteRef.current.getPlace();
+          setPlayerPlace(place.name)
+      });
+
+      autoCompleteRefAdd.current = new window.google.maps.places.Autocomplete(
+          inputRefAdd.current,
+          { types: ['(cities)'] }
+       );
+       
+       autoCompleteRefAdd.current.addListener("place_changed", async function () {
+          const place = await autoCompleteRefAdd.current.getPlace();
+          setPlayerPlace(place.name)
+    
+       });
+  })
    return (
       <>
        <ToastContainer />
@@ -108,21 +128,22 @@ const PlayerAdd = (props) => {
                         </div>
                      </Card.Header>
                      <Card.Body>
+                        
                         <Form onSubmit={onAddPlayer.bind(this)}>
                            <Row>
-                              <Col md="6" className="mb-3">
+                              <Col md="12" className="mb-3">
                                  <Form.Label md="6" htmlFor="validationDefault01">Name</Form.Label>
                                  <Form.Control type="text" id="validationDefault01" name="playername" onChange={(e) => setValue({ ...value, [e.target.name]: [e.target.value] })} required />
                               </Col>
-                              <Col md="6" className="mb-3">
+                              <Col md="12" className="mb-3">
                                  <Form.Label md="6" htmlFor="validationDefault01">Mobile No</Form.Label>
                                  <Form.Control type="text" id="validationDefault01" name="mobileno" onChange={(e) => setValue({ ...value, [e.target.name]: [e.target.value] })} required />
                               </Col>
-                              <Col md="6" className="mb-3">
+                              <Col md="12" className="mb-3">
                                  <Form.Label htmlFor="validationDefault02">DOB</Form.Label>
                                  <Form.Control type="date" id="exampleInputdate" name="dob" onChange={(e) => setValue({ ...value, [e.target.name]: [e.target.value] })} required />
                               </Col>
-                              <Col md="6" className="mb-3">
+                              {/* <Col md="6" className="mb-3">
                                  <Form.Group className="form-group">
                                     <Form.Label htmlFor="exampleFormControlSelect1"> Role</Form.Label>
                                     <Form.Select required className="form-select" id="exampleFormControlSelect1" value={role}
@@ -164,12 +185,11 @@ const PlayerAdd = (props) => {
                               <Col md="6" className="mb-3">
                                  <Form.Label htmlFor="validationDefault02">State</Form.Label>
                                  <Form.Control type="date" id="exampleInputdate" name="state" onChange={(e) => setValue({ ...value, [e.target.name]: [e.target.value] })} required />
-                              </Col>
-                              <Col md="6" className="mb-3">
-                                 <Form.Label htmlFor="validationDefault02">City</Form.Label>
-                                 <Form.Control type="date" id="exampleInputdate" name="city" onChange={(e) => setValue({ ...value, [e.target.name]: [e.target.value] })} required />
-                              </Col>
-                              <Col md="6" className="mb-3">
+                              </Col> */}
+                              <Col md="12" className="mb-3">
+                                 <Form.Label htmlFor="validationDefault02">Place</Form.Label>
+                                 <Form.Control type="text" id="place" placeholder='Enter place' ref={inputRef} defaultValue={playerPlace} required />                              </Col>
+                              <Col md="12" className="mb-3">
                                  <Form.Label htmlFor="validationDefault02">Email</Form.Label>
                                  <Form.Control type="email" id="exampleInputdate" name="email" onChange={(e) => setValue({ ...value, [e.target.name]: [e.target.value] })} />
                               </Col>

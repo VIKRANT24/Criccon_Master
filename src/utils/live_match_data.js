@@ -26,7 +26,23 @@ export const LIVE_MATCH_DATA = {
     match:{},
     teamA:[],
     teamB:[],
-    strikerFlag : false
+    strikerFlag : false,
+    batters:[],
+    inningNo:1,
+    showModalScorecard : false,
+    match_id : 0,
+    showModalTeamSelect:true,
+    showModalMatchSetup:false,
+    showModalSelectBatter:false,
+    showModalSelectNS:false,
+    showModalSelectBowler:false,
+    ground_id:'',
+    place_id:'',
+    tour_id:'',
+    matchStatus:'',
+    showModalEndInnings : false,
+    fielderArray : []
+   
 
 
 }

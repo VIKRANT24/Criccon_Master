@@ -8,7 +8,7 @@ import store from "../../../store/store";
 import { API_NAME } from '../../../utils/constants';
 import ApiService from '../../../services/service'
 import { useNavigate } from 'react-router-dom';
-
+import Loading from 'react-fullscreen-loading';
 
 // img
 
@@ -24,13 +24,13 @@ import { LIVE_MATCH_DATA } from '../../../utils/live_match_data';
 
 
 const EditScore = () => {
-  const [showModalTeamSelect, setshowModalTeamSelect] = React.useState(false);
+  const [showModalTeamSelect, setshowModalTeamSelect] = useState(JSON.parse(localStorage.getItem('LIVE_MATCH_DATA'))?.showModalTeamSelect=== undefined ? true : JSON.parse(localStorage.getItem('LIVE_MATCH_DATA'))?.showModalTeamSelect)
   const [showModalMatchSetting, setshowModalMatchSetting] = React.useState(false);
-  const [showModalMatchSetup, setshowModalMatchSetup] = React.useState(false);
+  const [showModalMatchSetup, setshowModalMatchSetup] =  useState(JSON.parse(localStorage.getItem('LIVE_MATCH_DATA'))?.showModalMatchSetup=== undefined ? false : JSON.parse(localStorage.getItem('LIVE_MATCH_DATA'))?.showModalMatchSetup)
   const [showModalEditBall, setshowModalEditBall] = React.useState(false);
-  const [showModalSelectBatter, setshowModalSelectBatter] = React.useState(false);
-  const [showModalSelectNS, setshowModalSelectNS] = React.useState(false);
-  const [showModalSelectBowler, setshowModalSelectBowler] = React.useState(false);
+  const [showModalSelectBatter, setshowModalSelectBatter] = useState(JSON.parse(localStorage.getItem('LIVE_MATCH_DATA'))?.showModalSelectBatter=== undefined ? false : JSON.parse(localStorage.getItem('LIVE_MATCH_DATA'))?.showModalSelectBatter)
+  const [showModalSelectNS, setshowModalSelectNS] = useState(JSON.parse(localStorage.getItem('LIVE_MATCH_DATA'))?.showModalSelectNS=== undefined ? false : JSON.parse(localStorage.getItem('LIVE_MATCH_DATA'))?.showModalSelectNS)
+  const [showModalSelectBowler, setshowModalSelectBowler] = useState(JSON.parse(localStorage.getItem('LIVE_MATCH_DATA'))?.showModalSelectBowler=== undefined ? false : JSON.parse(localStorage.getItem('LIVE_MATCH_DATA'))?.showModalSelectBowler)
   const [showModalChangeBatter, setshowModalChangeBatter] = React.useState(false);
   const [showModalChangeBowler, setshowModalChangeBowler] = React.useState(false);
   const [showModalNewBatter, setshowModalNewBatter] = React.useState(false);
@@ -38,27 +38,28 @@ const EditScore = () => {
   const [showModalWicket, setshowModalWicket] = React.useState(false);
   const [teamA, setTEAMA] = useState(JSON.parse(localStorage.getItem('LIVE_MATCH_DATA'))?.teamA=== undefined ? [] : JSON.parse(localStorage.getItem('LIVE_MATCH_DATA'))?.teamA)
   const [teamB, setTEAMB] = useState(JSON.parse(localStorage.getItem('LIVE_MATCH_DATA'))?.teamB=== undefined ? [] : JSON.parse(localStorage.getItem('LIVE_MATCH_DATA'))?.teamB)
-  const [showModalEndInnings, setshowModalEndInnings] = React.useState(false);
-  const [showModalScorecard, setshowModalScorecard] = React.useState(false);
+  const [showModalEndInnings, setshowModalEndInnings] = useState(JSON.parse(localStorage.getItem('LIVE_MATCH_DATA'))?.showModalEndInnings=== undefined ? false : JSON.parse(localStorage.getItem('LIVE_MATCH_DATA'))?.showModalEndInnings)
+  const [showModalScorecard, setshowModalScorecard] = useState(JSON.parse(localStorage.getItem('LIVE_MATCH_DATA'))?.showModalScorecard=== undefined ? false : JSON.parse(localStorage.getItem('LIVE_MATCH_DATA'))?.showModalScorecard)
   const [showModalWide, setshowModalWide] = React.useState(false);
   const [showModalLB, setshowModalLB] = React.useState(false);
   const [showModalNB, setshowModalNB] = React.useState(false);
   const [showModalRR, setshowModalRR] = React.useState(false);
   const [showModalB, setshowModalB] = React.useState(false);
   const [showModalMR, setshowModalMR] = React.useState(false);
-
-  
+  const [teamA_Initial, setTEAMA_Initial] = useState([]);
+  const [teamB_Initial, setTEAMB_Initial] = useState([]);
+  const [match_id, setMatch_id] = useState(JSON.parse(localStorage.getItem('LIVE_MATCH_DATA'))?.match_id=== undefined ? 1 : JSON.parse(localStorage.getItem('LIVE_MATCH_DATA'))?.match_id);
 
   //logic start
-  const [inningNo, setInningNo] = useState(1)
-  const [match, setMatch] = useState(JSON.parse(localStorage.getItem('LIVE_MATCH_DATA'))?.match=== undefined ? { inning1: { batters: [], bowlers: [] }, inning2: { batters: [], bowlers: [] } } : JSON.parse(localStorage.getItem('LIVE_MATCH_DATA'))?.match) 
+  const [inningNo, setInningNo] = useState(JSON.parse(localStorage.getItem('LIVE_MATCH_DATA'))?.inningNo=== undefined ? 1 : JSON.parse(localStorage.getItem('LIVE_MATCH_DATA'))?.inningNo)
+  const [match, setMatch] = useState(JSON.parse(localStorage.getItem('LIVE_MATCH_DATA'))?.match=== undefined ? { inning1: { batters: [], bowlers: [] }, inning2: { batters: [], bowlers: [] } } : JSON.parse(localStorage.getItem('LIVE_MATCH_DATA'))?.match)
   const [currentRunStack, setCurrentRunStack] = useState(JSON.parse(localStorage.getItem('LIVE_MATCH_DATA'))?.currentRunStack=== undefined ? [] : JSON.parse(localStorage.getItem('LIVE_MATCH_DATA'))?.currentRunStack)
   const [totalRuns, setTotalRuns] = useState(JSON.parse(localStorage.getItem('LIVE_MATCH_DATA'))?.totalRuns=== undefined ? 0 : JSON.parse(localStorage.getItem('LIVE_MATCH_DATA'))?.totalRuns)
   const [extras, setExtras] = useState(JSON.parse(localStorage.getItem('LIVE_MATCH_DATA'))?.extras=== undefined ? { total: 0, wide: 0, noBall: 0, lb: 0, b: 0 } : JSON.parse(localStorage.getItem('LIVE_MATCH_DATA'))?.extras)
   const [runsByOver, setRunsByOver] = useState(0)
   const [wicketCount, setWicketCount] = useState(JSON.parse(localStorage.getItem('LIVE_MATCH_DATA'))?.wicketCount=== undefined ? 0 : JSON.parse(localStorage.getItem('LIVE_MATCH_DATA'))?.wicketCount)
   const [totalOvers, setTotalOvers] = useState(JSON.parse(localStorage.getItem('LIVE_MATCH_DATA'))?.totalOvers=== undefined ? 0 : JSON.parse(localStorage.getItem('LIVE_MATCH_DATA'))?.totalOvers)
-  const [batters, setBatters] = useState([])
+  const [batters, setBatters] =  useState(JSON.parse(localStorage.getItem('LIVE_MATCH_DATA'))?.batters=== undefined ? [] : JSON.parse(localStorage.getItem('LIVE_MATCH_DATA'))?.batters)
   const [ballCount, setBallCount] = useState(JSON.parse(localStorage.getItem('LIVE_MATCH_DATA'))?.ballCount=== undefined ? 0 : JSON.parse(localStorage.getItem('LIVE_MATCH_DATA'))?.ballCount)
   const [overCount, setOverCount] = useState(JSON.parse(localStorage.getItem('LIVE_MATCH_DATA'))?.overCount=== undefined ? 0 : JSON.parse(localStorage.getItem('LIVE_MATCH_DATA'))?.overCount)
   const [recentOvers, setRecentOvers] = useState(JSON.parse(localStorage.getItem('LIVE_MATCH_DATA'))?.recentOvers=== undefined ? [] : JSON.parse(localStorage.getItem('LIVE_MATCH_DATA'))?.recentOvers)
@@ -75,8 +76,8 @@ const EditScore = () => {
   const [isModalOpen, setModalOpen] = React.useState(false)
   const [outType, setOutType] = React.useState('')
   const [runOutPlayerId, setRunOutPlayerId] = React.useState('')
-  const [remainingBalls, setRemainingBalls] = useState(0)
-  const [remainingRuns, setRemainingRuns] = useState(0)
+  const [remainingBalls, setRemainingBalls] = useState(JSON.parse(localStorage.getItem('LIVE_MATCH_DATA'))?.remainingBalls=== undefined ? [] : JSON.parse(localStorage.getItem('LIVE_MATCH_DATA'))?.remainingBalls)
+  const [remainingRuns, setRemainingRuns] = useState(JSON.parse(localStorage.getItem('LIVE_MATCH_DATA'))?.remainingRuns=== undefined ? [] : JSON.parse(localStorage.getItem('LIVE_MATCH_DATA'))?.remainingRuns)
   const [strikeValue, setStrikeValue] = React.useState('strike')
   const [isNoBall, setNoBall] = useState(false)
   const [suggestions, setSuggestions] = useState([])
@@ -102,7 +103,15 @@ const EditScore = () => {
   const [strikerFlag, setstrikerFlag] = useState(JSON.parse(localStorage.getItem('LIVE_MATCH_DATA'))?.strikerFlag=== undefined ? false : JSON.parse(localStorage.getItem('LIVE_MATCH_DATA'))?.strikerFlag)
   const [legalDelivery, setlegalDelivery] = useState('')
   const [showRunsBy, setshowRunsBy] = React.useState('0');
+  const [overlayFlag, setOverlayFlag] = React.useState(false);
 
+
+  const [ground_id, setgroundId] = useState(JSON.parse(localStorage.getItem('LIVE_MATCH_DATA'))?.ground_id=== undefined ? '' : JSON.parse(localStorage.getItem('LIVE_MATCH_DATA'))?.ground_id)
+
+  const [place_id, setplaceeId] = useState(JSON.parse(localStorage.getItem('LIVE_MATCH_DATA'))?.place_id=== undefined ? '' : JSON.parse(localStorage.getItem('LIVE_MATCH_DATA'))?.place_id)
+
+
+  const [tour_id, settourId] = useState(JSON.parse(localStorage.getItem('LIVE_MATCH_DATA'))?.tour_id=== undefined ? '' : JSON.parse(localStorage.getItem('LIVE_MATCH_DATA'))?.tour_id)
 
   const history = useNavigate();
 
@@ -110,7 +119,15 @@ const EditScore = () => {
 
   const [currentBowlerData, setcurrentBowlerData] = useState(JSON.parse(localStorage.getItem('LIVE_MATCH_DATA'))?.currentBowlerData=== undefined ? { id: '', name: "", over: 0.0, maiden: 0, runs: 0, wicket: 0, noBall: 0, wide: 0, economy: 0, ballCount: 0 } : JSON.parse(localStorage.getItem('LIVE_MATCH_DATA'))?.currentBowlerData)
 
+  const [crr, setCrr] =useState(JSON.parse(localStorage.getItem('LIVE_MATCH_DATA'))?.crr=== undefined ? false : JSON.parse(localStorage.getItem('LIVE_MATCH_DATA'))?.crr);
 
+  const [maxOver, setmaxOver] =useState(localStorage.getItem('MAXOVER')=== undefined ? 5 : +localStorage.getItem('MAXOVER'))
+
+  const [matchStatus, setmatchStatus] = useState(localStorage.getItem('MATCH_STATUS')=== undefined ? 'STARTED' : localStorage.getItem('MATCH_STATUS'))
+
+  const [fielderArray, setfielderArray] = useState(JSON.parse(localStorage.getItem('LIVE_MATCH_DATA'))?.fielderArray=== undefined ? [] : JSON.parse(localStorage.getItem('LIVE_MATCH_DATA'))?.fielderArray)
+
+  const [mvpMaster, setMVPMaster] = useState([])
 
   const BATTING = 'Batting'
   const YET_TO_BAT = 'Yet to Bat'
@@ -120,7 +137,7 @@ const EditScore = () => {
   // const data = { "team1": team_1, "team2": team_2, "maxOver": "3", "batting": team_2 }
   // const maxOver = parseInt(data.maxOver)
   // let { batting, team1, team2 } = data
-  
+
 
   class MathUtil {
     static getRandomNo() {
@@ -132,13 +149,14 @@ const EditScore = () => {
 
 
   const handleEndInning = (e) => {
+   
     // const endInningButton = document.getElementById('end-inning')
 
     if (hasMatchEnded === true)
       return;
 
     if (batter1.id !== undefined) {
-      const { id, name, run, ball, four, six, strikeRate, onStrike } = batter1
+      const { id, name, run, ball, four, six, strikeRate, onStrike,p_id } = batter1
       let indexData = batters.findIndex((e) => e.name === name)
       if (indexData >= 0) {
         batters[indexData].run = run
@@ -159,7 +177,8 @@ const EditScore = () => {
           onStrike,
           battingOrder: batter1.battingOrder,
           battingStatus: BATTING,
-          outReason: 'not out'
+          outReason: 'not out',
+          p_id
         })
       }
 
@@ -185,7 +204,8 @@ const EditScore = () => {
           onStrike: batter2.onStrike,
           battingOrder: batter2.battingOrder,
           battingStatus: BATTING,
-          outReason: 'not out'
+          outReason: 'not out',
+          p_id : batter2.p_id
         })
       }
 
@@ -199,10 +219,10 @@ const EditScore = () => {
       const deliveries = ['1', '2', '3', '4', '6', 'wd']
       for (let delivery of currentRunStack) {
         delivery = delivery.toString()
-        if (deliveries.includes(delivery) || delivery.includes('nb')) {
+        if (deliveries.includes(delivery) || delivery.includes('nb') || delivery.includes('4B') || delivery.includes('6B')) {
           isMaidenOver = false
         }
-        if (delivery === 'W') {
+        if (delivery.includes('W+LBW') || delivery.includes('W+CAO') || delivery.includes('W+STP') || delivery.includes('W+HIW') || delivery.includes('W+BWL')) {
           countWicket++
         }
         if (delivery.includes('nb')) {
@@ -210,6 +230,24 @@ const EditScore = () => {
         }
         if (delivery.includes('wd')) {
           countWide++
+        }
+        if (delivery.includes('lb')) {
+          const lastChar = delivery.substr(delivery.length - 1)
+          const run = parseInt(lastChar)
+          runsByOver = runsByOver - run
+  
+        }
+        if (delivery.includes('bye')) {
+          const lastChar = delivery.substr(delivery.length - 1)
+          const run = parseInt(lastChar)
+          runsByOver = runsByOver - run
+  
+        }
+        if (delivery.includes('BYE') || delivery.includes('LB') && !delivery.includes('LBW')) {
+          const lastChar = delivery.split('+')[2].charAt(0)
+          const run = parseInt(lastChar)
+          runsByOver = runsByOver - run
+  
         }
       }
       if (ballCount !== 6) {
@@ -229,6 +267,7 @@ const EditScore = () => {
         existingBowler.noBall = noBall + countNoBall
         existingBowler.wide = wide + countWide
         existingBowler.economy = Math.round((existingBowler.run / bowlerTotalOver) * 100) / 100
+        existingBowler.wicketArray =   existingBowler.wicketArray 
         bowlers[index] = existingBowler
         setBowlers(bowlers)
       } else {
@@ -243,6 +282,7 @@ const EditScore = () => {
             noBall: countNoBall,
             wide: countWide,
             economy: Math.round((runsByOver / (ballCount / 6)) * 100) / 100,
+            wicketArray: currentBowlerData.wicketArray
           })
           setBowlers(bowlers)
         }
@@ -313,12 +353,19 @@ const EditScore = () => {
       })
       // endInningButton.textContent = 'Reset'
       setMatchEnded(true)
+      localStorage.setItem('MATCH_STATUS','COMPLETED, '+ tossWon)
+      
     }
+
+ 
+
     setshowModalEndInnings(false)
     setshowModalScorecard(true)
     setstrikerFlag(false)
 
-
+   
+ 
+   
 
   }
   const handleBatter1Blur = (e) => {
@@ -339,6 +386,20 @@ const EditScore = () => {
     } else {
 
       let index = batters.findIndex((element) => element.name === name)
+      let indexData = teamA.findIndex((element) => element.player_name === name)
+
+      
+
+      let player_idData  = ''
+      if(indexData>=0)
+       player_idData = teamA[indexData].player_id
+      else
+      {
+        indexData = teamB.findIndex((element) => element.player_name === name)
+        player_idData = teamB[indexData].player_id
+      }
+      
+
       if (index >= 0) {
         setBatter1({
           id: batters[index].id,
@@ -351,7 +412,8 @@ const EditScore = () => {
           onStrike: strikeValue === 'strike' ? true : false,
           battingOrder: battingOrder + 1,
           battingStatus: BATTING,
-          outReason: 'not out'
+          outReason: 'not out',
+          p_id:batters[index].player_id,
         })
       }
       else {
@@ -367,13 +429,44 @@ const EditScore = () => {
           onStrike: strikeValue === 'strike' ? true : false,
           battingOrder: battingOrder + 1,
           battingStatus: BATTING,
-          outReason: 'not out'
+          outReason: 'not out',
+          p_id:player_idData,
         })
       }
 
 
       setBattingOrder(battingOrder + 1)
     }
+
+    inningNo === 1 ? scoring_team === team_1 ?
+      teamA.map((item, idx) => {
+         if(item.player_name===name)
+         {
+          teamA[idx].is_Batting = '1'
+         }
+      }) :
+      teamB.map((item, idx) => {
+        if(item.player_name===name)
+        {
+         teamB[idx].is_Batting =  '1'
+        }
+      }) :
+      chessing_team === team_1 ?
+        teamA.map((item, idx) => {
+          if(item.player_name===name)
+          {
+           teamA[idx].is_Batting =  '1'
+          }
+        }) :
+        teamB.map((item, idx) => {
+          if(item.player_name===name)
+          {
+           teamB[idx].is_Batting = '1'
+          }
+        })
+    
+
+
   }
   const handleBatter2Blur = (e) => {
     //let name = e.target.value
@@ -392,6 +485,18 @@ const EditScore = () => {
     } else {
 
       let index = batters.findIndex((element) => element.name === name)
+
+      let indexData = teamA.findIndex((element) => element.player_name === name)
+      let player_idData  = ''
+      if(indexData>=0)
+       player_idData = teamA[indexData].player_id
+      else
+      {
+        indexData = teamB.findIndex((element) => element.player_name === name)
+        player_idData = teamB[indexData].player_id
+      }
+      
+
       if (index >= 0) {
         setBatter2({
           id: batters[index].id,
@@ -404,7 +509,9 @@ const EditScore = () => {
           onStrike: strikeValue === 'strike' ? true : false,
           battingOrder: battingOrder + 1,
           battingStatus: BATTING,
-          outReason: 'not out'
+          outReason: 'not out',
+          p_id:batters[index].player_id,
+
         })
       }
       else {
@@ -420,13 +527,42 @@ const EditScore = () => {
           onStrike: strikeValue === 'non-strike' ? true : false,
           battingOrder: battingOrder + 1,
           battingStatus: BATTING,
-          outReason: 'not out'
+          outReason: 'not out',
+          p_id:player_idData,
         })
       }
 
 
       setBattingOrder(battingOrder + 1)
     }
+
+    inningNo === 1 ? scoring_team === team_1 ?
+    teamA.map((item, idx) => {
+       if(item.player_name===name)
+       {
+        teamA[idx].is_Batting = '1'
+       }
+    }) :
+    teamB.map((item, idx) => {
+      if(item.player_name===name)
+      {
+       teamB[idx].is_Batting =  '1'
+      }
+    }) :
+    chessing_team === team_1 ?
+      teamA.map((item, idx) => {
+        if(item.player_name===name)
+        {
+         teamA[idx].is_Batting =  '1'
+        }
+      }) :
+      teamB.map((item, idx) => {
+        if(item.player_name===name)
+        {
+         teamB[idx].is_Batting = '1'
+        }
+      })
+  
   }
   const handleBowlerBlur = () => {
     let name = CBOWLER
@@ -446,7 +582,7 @@ const EditScore = () => {
 
     if (index !== -1) {
       const existingBowler = bowlers[index]
-      const { maiden, wicket, noBall, wide, over, run, name, id } = existingBowler
+      const { maiden, wicket, noBall, wide, over, run, name, id , wicketArray } = existingBowler
 
       setcurrentBowlerData({
         id: id,
@@ -458,13 +594,14 @@ const EditScore = () => {
         noBall: noBall,
         wide: wide,
         economy: 0,
-        ballCount: 0
+        ballCount: 0,
+        wicketArray :wicketArray
       })
     }
     else {
       setcurrentBowlerData({
-        id: '',
-        name: "",
+        id: CBOWLER_ID,
+        name: CBOWLER,
         over: 0.0,
         maiden: 0,
         runs: 0,
@@ -472,7 +609,8 @@ const EditScore = () => {
         noBall: 0,
         wide: 0,
         economy: 0,
-        ballCount: 0
+        ballCount: 0,
+        wicketArray :[]
       })
     }
 
@@ -484,8 +622,8 @@ const EditScore = () => {
   }
 
   const onSuggestionsFetchRequested = (param) => {
-    const inputValue = param.value.trim().toLowerCase()
-    const suggestionArr = inputValue.length === 0 ? [] : bowlers.filter((bowlerObj) => bowlerObj.name.toLowerCase().includes(inputValue))
+    const inputValue = param.value.trim()
+    const suggestionArr = inputValue.length === 0 ? [] : bowlers.filter((bowlerObj) => bowlerObj.name.includes(inputValue))
     setSuggestions(suggestionArr)
   }
   const getSuggestionValue = (suggestion) => {
@@ -535,7 +673,7 @@ const EditScore = () => {
       if (deliveries.includes(delivery) || delivery.includes('nb') || delivery.includes('4B') || delivery.includes('6B')) {
         isMaidenOver = false
       }
-      if (delivery === 'W') {
+      if (delivery.includes('W+LBW') || delivery.includes('W+CAO') || delivery.includes('W+STP') || delivery.includes('W+HIW') || delivery.includes('W+BWL')) {
         countWicket++
       }
       if (delivery.includes('nb')) {
@@ -556,7 +694,7 @@ const EditScore = () => {
         runsByOverParam = runsByOverParam - run
 
       }
-      if (delivery.includes('BYE') || delivery.includes('LB')) {
+      if (delivery.includes('BYE') || delivery.includes('LB') && !delivery.includes('LBW')) {
         const lastChar = delivery.split('+')[2].charAt(0)
         const run = parseInt(lastChar)
         runsByOverParam = runsByOverParam - run
@@ -574,6 +712,7 @@ const EditScore = () => {
       existingBowler.noBall = noBall + countNoBall
       existingBowler.wide = wide + countWide
       existingBowler.economy = Math.round((existingBowler.run / existingBowler.over) * 100) / 100
+      existingBowler.wicketArray =   existingBowler.wicketArray 
       bowlers[index] = existingBowler
       setBowlers(bowlers)
       console.log('Bowlers stats', bowler)
@@ -593,6 +732,7 @@ const EditScore = () => {
           noBall: countNoBall,
           wide: countWide,
           economy: runsByOverParam,
+          wicketArray : currentBowlerData.wicketArray 
         },
       ])
       console.log('Bowlers stats', bowler)
@@ -607,7 +747,7 @@ const EditScore = () => {
     //new code
     const existingBowler1 = currentBowlerData
     existingBowler1.over = (+existingBowler1.over).toFixed()
-    //new code  
+    //new code
 
     setcurrentBowlerData({
       id: '',
@@ -619,7 +759,8 @@ const EditScore = () => {
       noBall: 0,
       wide: 0,
       economy: 0,
-      ballCount: 0
+      ballCount: 0,
+      wicketArray:[]
     })
     setCBOWLER('Select Bowler')
 
@@ -633,7 +774,7 @@ const EditScore = () => {
     //const batter1NameElement = document.getElementById('batter1Name')
     //batter1NameElement.value = ''
     //batter1NameElement.disabled = false
-    const { id, name, run, ball, four, six, strikeRate, onStrike, outReason } = batter1
+    const { id, name, run, ball, four, six, strikeRate, onStrike, outReason,p_id } = batter1
     let indexData = batters.findIndex((e) => e.name === name)
     if (indexData >= 0) {
       batters[indexData].run = run
@@ -656,6 +797,7 @@ const EditScore = () => {
           battingOrder: batter1.battingOrder,
           battingStatus: OUT,
           outReason: outReason,
+          p_id
         },
       ])
     }
@@ -666,7 +808,7 @@ const EditScore = () => {
     // const batter2NameElement = document.getElementById('batter2Name')
     // batter2NameElement.value = ''
     // batter2NameElement.disabled = false
-    const { id, name, run, ball, four, six, strikeRate, onStrike, outReason } = batter2
+    const { id, name, run, ball, four, six, strikeRate, onStrike, outReason,p_id  } = batter2
     let indexData = batters.findIndex((e) => e.name === name)
     if (indexData >= 0) {
       batters[indexData].run = run
@@ -689,6 +831,7 @@ const EditScore = () => {
           battingOrder: batter2.battingOrder,
           battingStatus: OUT,
           outReason: outReason,
+          p_id 
         },
       ])
     }
@@ -831,7 +974,7 @@ const EditScore = () => {
         total: state.total - 1,
       }))
 
-      //current bowler 
+      //current bowler
       const existingBowler = currentBowlerData
       existingBowler.runs = existingBowler.runs - (run + 1)
 
@@ -845,7 +988,7 @@ const EditScore = () => {
         total: state.total - (run + 1),
       }))
 
-      //current bowler 
+      //current bowler
       const existingBowler = currentBowlerData
       existingBowler.runs = existingBowler.runs - (run + 1)
     }
@@ -1131,7 +1274,7 @@ const EditScore = () => {
           setRemainingBalls(remainingBalls + 1)
           setRemainingRuns(remainingRuns + run)
         }
-        else if (last.includes('lb')) {
+        else if (last.includes('lb') || last.includes('bye')) {
           currentRunStack.pop()
           setCurrentRunStack(currentRunStack)
           const lastChar = last.substr(last.length - 1)
@@ -1141,13 +1284,25 @@ const EditScore = () => {
           setTotalRuns(totalRuns - (run))
           setRunsByOver(runsByOver - (run))
 
-          setExtras((state) => ({
-            ...state,
-            total: state.total - run,
-            lb: state.lb - run,
-          }))
+          if(last.includes('lb') )
+          {
+            setExtras((state) => ({
+              ...state,
+              total: state.total - run,
+              lb: state.lb - run,
+            }))
+          }
+          else
+          {
+            setExtras((state) => ({
+              ...state,
+              total: state.total - run,
+              b: state.b - run,
+            }))
+          }
+          
 
-          //current bowler 
+          //current bowler
           const existingBowler = currentBowlerData
           existingBowler.over = (+existingBowler.over - 0.1).toFixed(1)
           setTotalOvers(Math.round((totalOvers - 0.1) * 10) / 10)
@@ -1979,7 +2134,7 @@ const EditScore = () => {
 
   const handleWicket = (isRunOut, playerId) => {
 
-    
+
 
     if (dismissalTypes === 'runout' || dismissalTypes === 'timeout' || dismissalTypes === 'obstructing' || dismissalTypes === 'retired') {
       isRunOut = true
@@ -2137,6 +2292,27 @@ const EditScore = () => {
             const existingBowler = currentBowlerData
             existingBowler.over = (+existingBowler.over + 0.1).toFixed(1)
             existingBowler.wicket = existingBowler.wicket + 1
+
+            
+            //new code 24 mar 24
+            if (batter1.onStrike === true) {
+              var data_bat = {
+                'batter_run':batter1.run ,
+                'batter_id':batter1.p_id,
+                'order':batter1.battingOrder,
+                'type':dismissalTypes
+              }
+            }
+            else {
+              var data_bat = {
+                'batter_run':batter2.run ,
+                'batter_id':batter2.p_id,
+                'order':batter2.battingOrder,
+                'type':dismissalTypes
+              }
+            }
+
+            existingBowler.wicketArray.push(data_bat)
           }
 
         }
@@ -2210,10 +2386,7 @@ const EditScore = () => {
           let runScored = +(document.getElementById('runScored').value)
           let runScoredBy = document.getElementById('runScoredBy').value
 
-          if (dismissalTypes === 'obstructing')
-            setCurrentRunStack((state) => [...state, 'W+OBF+' + runScored + 'NB'])
-          else
-            setCurrentRunStack((state) => [...state, 'W+RNO+' + runScored + 'NB'])
+         
           setWicketCount(wicketCount + 1)
           setRemainingRuns(remainingRuns - (1 + runScored))
           setTotalRuns(totalRuns + 1 + runScored)
@@ -2244,6 +2417,11 @@ const EditScore = () => {
               batter2.strikeRate = sr
             }
 
+            if (dismissalTypes === 'obstructing')
+            setCurrentRunStack((state) => [...state, 'W+OBF+' + runScored + 'NB'])
+          else
+            setCurrentRunStack((state) => [...state, 'W+RNO+' + runScored + 'NB'])
+
           }
           else if (runScoredBy === 'legbye') {
 
@@ -2265,6 +2443,39 @@ const EditScore = () => {
             else {
               batter2.ball = batter2.ball + 1
             }
+
+            if (dismissalTypes === 'obstructing')
+            setCurrentRunStack((state) => [...state, 'W+OBF+' + runScored + 'NB/LB'])
+          else
+            setCurrentRunStack((state) => [...state, 'W+RNO+' + runScored + 'NB/LB'])
+
+          }
+          else if (runScoredBy === 'bye') {
+
+            setExtras((state) => ({
+              ...state,
+              total: state.total + runScored,
+              b: state.b + runScored,
+            }))
+
+            //new bowler
+            const existingBowler = currentBowlerData
+            existingBowler.runs = existingBowler.runs + 1
+
+            const { id, name, run, ball, four, six, strikeRate, onStrike, outReason } = batter1
+            const { id2, name2, run2, ball2, four2, six2, strikeRate2, onStrike2, outReason2 } = batter2
+            if (batter1.onStrike === true) {
+              batter1.ball = ball + 1
+            }
+            else {
+              batter2.ball = batter2.ball + 1
+            }
+
+            if (dismissalTypes === 'obstructing')
+            setCurrentRunStack((state) => [...state, 'W+OBF+' + runScored + 'NB/BYE'])
+          else
+            setCurrentRunStack((state) => [...state, 'W+RNO+' + runScored + 'NB/BYE'])
+
           }
 
 
@@ -2418,6 +2629,26 @@ const EditScore = () => {
                 batter2.strikeRate = sr
               }
 
+              //new code 24 mar 24
+            if (batter1.onStrike === true) {
+              var data_bat = {
+                'batter_run':batter1.run ,
+                'batter_id':batter1.p_id,
+                'order':batter1.battingOrder,
+                'type':dismissalTypes
+              }
+            }
+            else {
+              var data_bat = {
+                'batter_run':batter2.run ,
+                'batter_id':batter2.p_id,
+                'order':batter2.battingOrder,
+                'type':dismissalTypes
+              }
+            }
+
+            existingBowler.wicketArray.push(data_bat)
+
             }
           }
 
@@ -2446,6 +2677,55 @@ const EditScore = () => {
       if (batter1.name === batterOuts) {
         if (dismissalTypes === 'runout') {
           batter1.outReason = 'run out' + '(' + bowlerWicketTakers + ', ' + fielderAssists + ')'
+
+          let obj = teamA.findIndex(o => o.player_name === bowlerWicketTakers);
+          var data1,data2 = ''
+
+          if(obj > -1)
+          data1 = teamA[obj].player_id
+          else
+          {
+            obj = teamB.findIndex(o => o.player_name === bowlerWicketTakers);
+            data1 = teamB[obj].player_id
+          }
+          
+
+          let obj1 = teamA.findIndex(o => o.player_name === fielderAssists);
+          if(obj1 > -1)
+          data2 = teamA[obj1].player_id
+          else
+          {
+            obj1 = teamB.findIndex(o => o.player_name === fielderAssists);
+            data2 = teamB[obj1].player_id
+          }
+
+
+
+           //24 mar 24
+           if (batter1.onStrike === true) {
+            var data_fielder = {
+              'batter_run':batter1.run ,
+              'fielder_id1':data1,
+              'fielder_id2':data2,
+              'order':batter1.battingOrder,
+              'type':dismissalTypes,
+              'b_id':CBOWLER_ID,
+              'name':fielderAssists
+            }
+       
+          }
+          else {
+            var data_fielder = {
+              'batter_run':batter2.run ,
+              'fielder_id1':data1,
+              'fielder_id2':data2,
+              'order':batter2.battingOrder,
+              'type':dismissalTypes,
+              'b_id':CBOWLER_ID,
+              'name':fielderAssists
+            }
+          }
+          fielderArray.push(data_fielder)
         }
         else {
           if (dismissalTypes === 'obstructing')
@@ -2463,6 +2743,56 @@ const EditScore = () => {
       } else {
         if (dismissalTypes === 'runout') {
           batter2.outReason = 'run out' + '(' + bowlerWicketTakers + ', ' + fielderAssists + ')'
+
+
+          let obj = teamA.findIndex(o => o.player_name === bowlerWicketTakers);
+          var data1,data2 = ''
+
+          if(obj > -1)
+          data1 = teamA[obj].player_id
+          else
+          {
+            obj = teamB.findIndex(o => o.player_name === bowlerWicketTakers);
+            data1 = teamB[obj].player_id
+          }
+          
+
+          let obj1 = teamA.findIndex(o => o.player_name === fielderAssists);
+          if(obj1 > -1)
+          data2 = teamA[obj1].player_id
+          else
+          {
+            obj1 = teamB.findIndex(o => o.player_name === fielderAssists);
+            data2 = teamB[obj1].player_id
+          }
+
+
+            //24 mar 24
+            if (batter1.onStrike === true) {
+              var data_fielder = {
+                'batter_run':batter1.run ,
+                'fielder_id1':data1,
+                'fielder_id2':data2,
+                'order':batter1.battingOrder,
+                'type':dismissalTypes,
+                'b_id':CBOWLER_ID,
+                'name':fielderAssists
+              }
+         
+            }
+            else {
+              var data_fielder = {
+                'batter_run':batter2.run ,
+                'fielder_id1':data1,
+                'fielder_id2':data2,
+                'order':batter2.battingOrder,
+                'type':dismissalTypes,
+                'b_id':CBOWLER_ID,
+                'name':fielderAssists
+              }
+            }
+            fielderArray.push(data_fielder)
+
         }
         else {
           if (dismissalTypes === 'obstructing')
@@ -2485,6 +2815,49 @@ const EditScore = () => {
             dataReason = "c" + fielderAssists + " & b " + CBOWLER
           else
             dataReason = "c & b " + CBOWLER
+
+
+            let obj = teamA.findIndex(o => o.player_name === bowlerWicketTakers);
+          var data1,data2 = ''
+
+          if(obj > -1)
+          data1 = teamA[obj].player_id
+          else
+          {
+            obj = teamB.findIndex(o => o.player_name === bowlerWicketTakers);
+            data1 = teamB[obj].player_id
+          }
+          
+
+
+         
+  
+            
+
+            //24 mar 24
+            if (batter1.onStrike === true) {
+              var data_fielder = {
+                'batter_run':batter1.run ,
+                'fielder_id1':data1,
+                'order':batter1.battingOrder,
+                'type':dismissalTypes,
+                'b_id':CBOWLER_ID,
+                'name':bowlerWicketTakers
+              }
+         
+            }
+            else {
+              var data_fielder = {
+                'batter_run':batter2.run ,
+                'fielder_id1':data1,
+                'order':batter2.battingOrder,
+                'type':dismissalTypes,
+                'b_id':CBOWLER_ID, 
+                'name':bowlerWicketTakers
+              }
+            }
+            fielderArray.push(data_fielder)
+
         }
 
         if (dismissalTypes === 'lbw') {
@@ -2497,6 +2870,47 @@ const EditScore = () => {
 
         if (dismissalTypes === 'stumped') {
           dataReason = "st " + bowlerWicketTakers + " b " + CBOWLER
+
+          let obj = teamA.findIndex(o => o.player_name === bowlerWicketTakers);
+          var data1,data2 = ''
+
+          if(obj > -1)
+          data1 = teamA[obj].player_id
+          else
+          {
+            obj = teamB.findIndex(o => o.player_name === bowlerWicketTakers);
+            data1 = teamB[obj].player_id
+          }
+          
+
+         
+
+
+         
+
+           //24 mar 24
+           if (batter1.onStrike === true) {
+            var data_fielder = {
+              'batter_run':batter1.run ,
+              'fielder_id1':data1,
+              'order':batter1.battingOrder,
+              'type':dismissalTypes,
+              'b_id':CBOWLER_ID,
+              'name':bowlerWicketTakers
+            }
+       
+          }
+          else {
+            var data_fielder = {
+              'batter_run':batter2.run ,
+              'fielder_id1':data1,
+              'order':batter2.battingOrder,
+              'type':dismissalTypes,
+              'b_id':CBOWLER_ID,
+              'name':bowlerWicketTakers
+            }
+          }
+          fielderArray.push(data_fielder)
         }
 
         if (dismissalTypes === 'hit') {
@@ -2544,6 +2958,8 @@ const EditScore = () => {
         handleEndInning()
       }
     }
+
+   
 
 
 
@@ -2621,10 +3037,10 @@ const EditScore = () => {
   }
 
 
-  const team_1 = JSON.parse(localStorage.getItem('LIVE_MATCH_DATA'))?.team_1=== undefined ? 'Mumbai Indians' : JSON.parse(localStorage.getItem('LIVE_MATCH_DATA'))?.team_1
-  const team_2 = JSON.parse(localStorage.getItem('LIVE_MATCH_DATA'))?.team_2=== undefined ? "Royal Challengers Bangalore" : JSON.parse(localStorage.getItem('LIVE_MATCH_DATA'))?.team_2
-  const data = { "team1": team_1, "team2": team_2, "maxOver": JSON.parse(localStorage.getItem('LIVE_MATCH_DATA'))?.maxOver=== undefined ? "5" : JSON.parse(localStorage.getItem('LIVE_MATCH_DATA'))?.maxOver, "batting": team_2 }
-  const maxOver = parseInt(data.maxOver)
+  const team_1 = localStorage.getItem('team_A')
+  const team_2 = localStorage.getItem('team_B')
+  const data = { "team1": team_1, "team2": team_2, "maxOver": localStorage.getItem('MAXOVER')=== undefined ? 5 : +localStorage.getItem('MAXOVER'), "batting": team_2 }
+  //const maxOver = parseInt(data.maxOver) 11 feb
   let { batting, team1, team2 } = data
 
   LIVE_MATCH_DATA.team_1 = team_1
@@ -2636,28 +3052,32 @@ const EditScore = () => {
   rrr = isFinite(rrr) ? rrr : 0
   // const overs = overCount + ballCount / 6
   // let crr = (totalRuns / overs).toFixed(2)
+
   const overs = JSON.parse(localStorage.getItem('LIVE_MATCH_DATA'))?.overCount=== undefined ? 0 : JSON.parse(localStorage.getItem('LIVE_MATCH_DATA'))?.overCount + JSON.parse(localStorage.getItem('LIVE_MATCH_DATA'))?.ballCount == undefined ? 0 : JSON.parse(localStorage.getItem('LIVE_MATCH_DATA'))?.ballCount / 6
-  let crr = JSON.parse(localStorage.getItem('LIVE_MATCH_DATA'))?.crr=== undefined ? 0 : JSON.parse(localStorage.getItem('LIVE_MATCH_DATA'))?.crr
-  crr = isFinite(crr) ? crr : 0
+ // let crr = JSON.parse(localStorage.getItem('LIVE_MATCH_DATA'))?.crr=== undefined ? 0 : JSON.parse(localStorage.getItem('LIVE_MATCH_DATA'))?.crr
+  //crr = isFinite(crr) ? crr : 0
   const inning1 = match.inning1
   const inning2 = match.inning2
   let scoringTeam = batting === team1 ? team1 : team2
   let chessingTeam = scoringTeam === team1 ? team2 : team1
   let winningMessage = `${inningNo === 1 ? scoring_team : chessing_team} needs ${remainingRuns} ${remainingRuns <= 1 ? 'run' : 'runs'
     } in ${remainingBalls} ${remainingBalls <= 1 ? 'ball' : 'balls'} to win`
+
+   
+
   if (inningNo === 2) {
     var target = inning1.runs + 1
-    if (wicketCount < 10 && overCount <= maxOver && totalRuns >= target) {
+    if (wicketCount < 10 && overCount <=  maxOver && totalRuns >= target) {
       winningMessage = `${chessing_team} won by ${10 - wicketCount} wickets`
       endMatch()
 
     }
-    if ((wicketCount >= 10 || overCount >= maxOver) && totalRuns < target - 1) {
+    if ((wicketCount >= 10 || overCount >=  maxOver) && totalRuns < target - 1) {
       winningMessage = `${scoring_team} won by ${target - totalRuns - 1} runs`
       endMatch()
 
     }
-    if (wicketCount < 10 && overCount === maxOver && totalRuns === target - 1) {
+    if (wicketCount < 10 && overCount ===  maxOver && totalRuns === target - 1) {
       winningMessage = 'Match Tied'
       endMatch()
 
@@ -2696,8 +3116,15 @@ const EditScore = () => {
   }
 
   const showEditMatchSetting = (id) => {
-    setshowModalTeamSelect(false)
-    setshowModalMatchSetting(true)
+    if(teamA.length === teamB.length)
+    {
+      setshowModalTeamSelect(false)
+      setshowModalMatchSetting(true)
+    }
+    else{
+      Alert('01', 'Please select equal players from both teams.')
+    }
+ 
 
   }
 
@@ -2714,7 +3141,7 @@ const EditScore = () => {
   }
 
   const showEditSelectBatter = (id) => {
-   alert('in')
+
     if(tossWon==='')
     {
       Alert('01', 'Please select Toss Won By')
@@ -2725,16 +3152,21 @@ const EditScore = () => {
       Alert('01', 'Please select Who Is Batting')
       return;
     }
-   
+
 
     if (wicketCount + 1 != 10) {
-      setshowModalSelectBatter(true)
       setshowModalMatchSetup(false)
+      setshowModalSelectBatter(true)
+     
     }
 
 
-
-
+     if(tossWon===electedTo)
+     localStorage.setItem('MATCH_STATUS',"LIVE, "+ tossWon+" won the toss and elected to bat") //setmatchStatus('LIVE, '+ tossWon+' won the toss and elected to bat') 
+     else
+     localStorage.setItem('MATCH_STATUS',"LIVE, "+ tossWon+" won the toss and elected to field")//setmatchStatus('LIVE, '+ tossWon+' won the toss and elected to field')
+   
+   
 
 
   }
@@ -2755,6 +3187,7 @@ const EditScore = () => {
       inningNo === 1 ?
 
         scoring_team === team_1 ? teamA.forEach(element => {
+          alert("playername"+(element.player_name ))
           if (element.player_name === STRIKER)
             element.is_Batting = '1'
         }) :
@@ -2772,6 +3205,9 @@ const EditScore = () => {
             if (element.player_name === STRIKER)
               element.is_Batting = '1'
           })
+
+
+          
 
 
 
@@ -2884,7 +3320,7 @@ const EditScore = () => {
 
   const selectBowler = (event) => {
 
-   
+
 
     let bowler_data = (event.target.value).split('$')
 
@@ -2895,7 +3331,7 @@ const EditScore = () => {
   }
 
   const startMatch = (event) => {
-    
+
     if(CBOWLER === 'Select Bowler')
     {
       Alert('01','Please select Bowler')
@@ -2909,7 +3345,7 @@ const EditScore = () => {
       return;
       }
     }
-   
+
 
     handleBowlerBlur()
     setshowModalSelectBowler(false)
@@ -2924,6 +3360,7 @@ const EditScore = () => {
 
   const batterOut = (event) => {
     setbatterOuts(event.target.value)
+    alert(event.target.value)
   }
 
   const dismissalType = (event) => {
@@ -2944,7 +3381,12 @@ const EditScore = () => {
 
     let index = teamA.findIndex(e => e.player_id === player_id)
     if (index === -1) {
-      teamA.push({ player_id, player_name, is_Batting })
+      // teamA.push({ player_id, player_name, is_Batting })
+      setTEAMA([
+        ...teamA,
+        { player_id: player_id, player_name: player_name, is_Batting: is_Batting}
+      ]);
+      setTEAMA_Initial(teamA_Initial.filter(data => data.player_id !== item.player_id));
       Alert('00', 'Player added to playing 11')
     }
 
@@ -2961,7 +3403,12 @@ const EditScore = () => {
 
     let index = teamB.findIndex(e => e.player_id === player_id)
     if (index === -1) {
-      teamB.push({ player_id, player_name, is_Batting })
+      // teamB.push({ player_id, player_name, is_Batting })
+      setTEAMB([
+        ...teamB,
+        { player_id: player_id, player_name: player_name, is_Batting: is_Batting}
+      ]);
+      setTEAMB_Initial(teamB_Initial.filter(data => data.player_id !== item.player_id));
       Alert('00', 'Player added to playing 11')
     }
 
@@ -2983,7 +3430,7 @@ const EditScore = () => {
       Alert('01','Please select Dismissal Type')
       return;
     }
-   
+
 
     if (dismissalTypes === 'caught' || dismissalTypes === 'stumped')
     {
@@ -3012,7 +3459,7 @@ const EditScore = () => {
           Alert('01','Please select Runs By')
           return;
         }
-       
+
       }
 
     }
@@ -3030,14 +3477,47 @@ const EditScore = () => {
   }
 
   const end2ndInnings = () => {
+    setmatchStatus('LIVE, '+ winningMessage)//14 feb
+    localStorage.setItem('MATCH_STATUS','LIVE, '+ winningMessage)
     setshowModalScorecard(false); setshowModalSelectBatter(true)
   }
 
+  const getMOM = () => {
+    let params = {
+      match_id : JSON.parse(localStorage.getItem('LIVE_MATCH_DATA')).match_id,
+      tour_id : JSON.parse(localStorage.getItem('LIVE_MATCH_DATA')).tour_id,
+  
+    }
+  
+    ApiService.postData(API_NAME.FETCH_MVP,params).then(
+       (resData) => {
+        setMVPMaster([])
+          if (resData.statusCode === '00') {
+  
+             console.log('==================================='+resData)
+             setMVPMaster(resData.data.MVPPointsData)
+           
+          }
+          else {
+          
+             console.log('==================================')
+          }
+  
+  
+       }
+    ).catch((err) => {
+     
+       console.log('==================================')
+  
+    });
+  }
+
+
   const finalMatchEnd = () => {
-    setshowModalScorecard(false)
-    history('/home/all-tournaments')
-   
-    
+    endFinalMatch();
+  
+
+
   }
 
   const showEditWide = () => {
@@ -3071,6 +3551,7 @@ const EditScore = () => {
   }
 
   const showEditMR = () => {
+
     setshowModalMR(true)
 
 
@@ -3387,178 +3868,53 @@ const EditScore = () => {
 
 
 
-
   useEffect(() => {
 
 debugger;
-    if(teamA.length == 0 && teamB.length == 0 )
-{
-  setTEAMA(JSON.parse(localStorage.getItem('TEAM1_PLAYER')));
-  setTEAMB(JSON.parse(localStorage.getItem('TEAM2_PLAYER')));
-    // setTEAMA([
-    //   {
-    //     "player_id": 26,
-    //     "player_name": "Rohit Sharma",
-    //     "team_id": 7,
-    //     "is_Batting": '0'
-    //   },
-    //   {
-    //     "player_id": 27,
-    //     "player_name": "Ishan Kishan",
-    //     "team_id": 7,
-    //     "is_Batting": '0'
-    //   },
-    //   {
-    //     "player_id": 28,
-    //     "player_name": "Suryakumar Yadav",
-    //     "team_id": 7,
-    //     "is_Batting": '0'
-    //   },
-    //   {
-    //     "player_id": 29,
-    //     "player_name": "Harbhajan Singh",
-    //     "team_id": 7,
-    //     "is_Batting": '0'
-    //   }, {
-    //     "player_id": 30,
-    //     "player_name": "Zaheer Khan",
-    //     "team_id": 7,
-    //     "is_Batting": '0'
-    //   }, {
-    //     "player_id": 31,
-    //     "player_name": "Malinga",
-    //     "team_id": 7,
-    //     "is_Batting": '0'
-    //   }, {
-    //     "player_id": 32,
-    //     "player_name": "Arjun Tendulkar",
-    //     "team_id": 7,
-    //     "is_Batting": '0'
-    //   }, {
-    //     "player_id": 33,
-    //     "player_name": "Jasprit Bumrah",
-    //     "team_id": 7,
-    //     "is_Batting": '0'
-    //   }, {
-    //     "player_id": 34,
-    //     "player_name": "Hardik Pandya",
-    //     "team_id": 7,
-    //     "is_Batting": '0'
-    //   }, {
-    //     "player_id": 35,
-    //     "player_name": "Krunal Pandya",
-    //     "team_id": 7,
-    //     "is_Batting": '0'
-    //   }, {
-    //     "player_id": 36,
-    //     "player_name": "Piyush Chawla",
-    //     "team_id": 7,
-    //     "is_Batting": '0'
-    //   }
-    // ])
-
-    // setTEAMB([
-    //   {
-    //     "player_id": 239,
-    //     "player_name": "Ruturaj Gaikwad",
-    //     "team_id": 8,
-    //     "is_Batting": '0'
-    //   },
-    //   {
-    //     "player_id": 330,
-    //     "player_name": "M S Dhoni",
-    //     "team_id": 8,
-    //     "is_Batting": '0'
-    //   },
-    //   {
-    //     "player_id": 312,
-    //     "player_name": "Ravendra Jadega",
-    //     "team_id": 8,
-    //     "is_Batting": '0'
-    //   },
-    //   {
-    //     "player_id": 328,
-    //     "player_name": "DJ Bravo",
-    //     "team_id": 8,
-    //     "is_Batting": '0'
-    //   },
-    //   {
-    //     "player_id": 388,
-    //     "player_name": "Watson",
-    //     "team_id": 8,
-    //     "is_Batting": '0'
-    //   },
-    //   {
-    //     "player_id": 458,
-    //     "player_name": "Kedar Jadhav",
-    //     "team_id": 8,
-    //     "is_Batting": '0'
-    //   },
-    //   {
-    //     "player_id": 459,
-    //     "player_name": "Suresh Raina",
-    //     "team_id": 8,
-    //     "is_Batting": '0'
-    //   },
-    //   {
-    //     "player_id": 460,
-    //     "player_name": "Moeen Ali",
-    //     "team_id": 8,
-    //     "is_Batting": '0'
-    //   },
-    //   {
-    //     "player_id": 461,
-    //     "player_name": "Shivam Dube",
-    //     "team_id": 8,
-    //     "is_Batting": '0'
-    //   },
-    //   {
-    //     "player_id": 462,
-    //     "player_name": "Devon Conway",
-    //     "team_id": 8,
-    //     "is_Batting": '0'
-    //   },
-    //   {
-    //     "player_id": 463,
-    //     "player_name": "Ajinkya Rahane",
-    //     "team_id": 8,
-    //     "is_Batting": '0'
-    //   }
-    // ])
-  }
+    //if (teamA.length == 0 && teamB.length == 0) {
+      setTEAMA_Initial(JSON.parse(localStorage.getItem('TEAM_A_INITIAL')));
+      setTEAMB_Initial(JSON.parse(localStorage.getItem('TEAM_B_INITIAL')));
+    //}
 
     //setT1(data1)
     //setT2(data2)
 
-   if(electedTo=='' || tossWon == '')
-   setshowModalTeamSelect(true)
-   
-   else{
-    if(STRIKER==='Select Striker' && strikerFlag === true)
-    setshowModalSelectBatter(true)
-    else if(NSTRIKER==='Select Non-Striker' && strikerFlag === true)
-    setshowModalSelectNS(true)
-    else if(CBOWLER==='Select Bowler')
-    setshowModalSelectBowler(true)
-   }
-   
-  
-   
+
+  //  if(electedTo=='' || tossWon == '')
+  //  setshowModalTeamSelect(true)
+
+
+
+
+
+  //  else{
+  //   if(STRIKER==='Select Striker' && strikerFlag === true)
+  //   setshowModalSelectBatter(true)
+  //   else if(NSTRIKER==='Select Non-Striker' && strikerFlag === true)
+  //   setshowModalSelectNS(true)
+  //   else if(CBOWLER==='Select Bowler')
+  //   setshowModalSelectBowler(true)
+  //  }
+
+
+
 
     // handleBatter1Blur('Vikrant')
     // handleBatter2Blur('Saurabh')
     //handleBowlerBlur('Santosh')
 
 
-    debugger;
+  //   debugger;
+
+  //setmaxOver(localStorage.getItem('MAXOVER'))
+
     LIVE_MATCH_DATA.totalRuns = totalRuns;
     LIVE_MATCH_DATA.wicketCount = wicketCount;
     LIVE_MATCH_DATA.totalOvers = totalOvers;
     LIVE_MATCH_DATA.overCount = overCount
     LIVE_MATCH_DATA.ballCount = ballCount
     LIVE_MATCH_DATA.overs = LIVE_MATCH_DATA.overCount + LIVE_MATCH_DATA.ballCount / 6
-    LIVE_MATCH_DATA.crr = (totalRuns / LIVE_MATCH_DATA.overs).toFixed(2)
-    LIVE_MATCH_DATA.crr = isFinite(LIVE_MATCH_DATA.crr) ? LIVE_MATCH_DATA.crr : 0
+
     LIVE_MATCH_DATA.currentRunStack = currentRunStack
 
     LIVE_MATCH_DATA.electedTo = electedTo
@@ -3571,6 +3927,8 @@ debugger;
     LIVE_MATCH_DATA.batter1 = batter1
     LIVE_MATCH_DATA.batter2 = batter2
 
+    LIVE_MATCH_DATA.batters = batters
+
     LIVE_MATCH_DATA.CBOWLER=CBOWLER
     LIVE_MATCH_DATA.CBOWLER_ID = CBOWLER_ID
     LIVE_MATCH_DATA.currentBowlerData = currentBowlerData
@@ -3582,19 +3940,205 @@ debugger;
     LIVE_MATCH_DATA.teamA = teamA
     LIVE_MATCH_DATA.teamB = teamB
     LIVE_MATCH_DATA.strikerFlag = strikerFlag
-   
+    LIVE_MATCH_DATA.inningNo = inningNo
+    LIVE_MATCH_DATA.remainingBalls = remainingBalls
+    LIVE_MATCH_DATA.remainingRuns = remainingRuns
+    LIVE_MATCH_DATA.showModalScorecard = showModalScorecard
+    LIVE_MATCH_DATA.match_id = match_id
+    LIVE_MATCH_DATA.showModalTeamSelect = showModalTeamSelect
+    LIVE_MATCH_DATA.showModalMatchSetup = showModalMatchSetup
+    LIVE_MATCH_DATA.showModalSelectBatter = showModalSelectBatter
+    LIVE_MATCH_DATA.showModalSelectNS = showModalSelectNS
+    LIVE_MATCH_DATA.showModalSelectBowler = showModalSelectBowler
+    LIVE_MATCH_DATA.matchStatus = localStorage.getItem('MATCH_STATUS') === 'null' || localStorage.getItem('MATCH_STATUS') === undefined ? 'STARTED' : localStorage.getItem('MATCH_STATUS')
+
+
+    LIVE_MATCH_DATA.ground_id = ground_id == '' ? localStorage.getItem('ground_id') : ground_id
+    LIVE_MATCH_DATA.place_id = place_id == '' ? localStorage.getItem('place_id') : place_id
+    LIVE_MATCH_DATA.tour_id = tour_id == '' ? sessionStorage.getItem('tournamentId') : tour_id
+    LIVE_MATCH_DATA.maxOver =  maxOver
+    LIVE_MATCH_DATA.showModalEndInnings = showModalEndInnings
+    LIVE_MATCH_DATA.fielderArray = fielderArray
+
+
+   setCrr((totalRuns / LIVE_MATCH_DATA.overs).toFixed(2))
+
+   LIVE_MATCH_DATA.crr = (totalRuns / LIVE_MATCH_DATA.overs).toFixed(2)
+   LIVE_MATCH_DATA.crr = isFinite(LIVE_MATCH_DATA.crr) ? LIVE_MATCH_DATA.crr : 0
 
    
 
+   if(LIVE_MATCH_DATA.showModalTeamSelect==true)
+   {
+     setshowModalMatchSetup(false)
+     setshowModalSelectBatter(false)
+     setshowModalSelectNS(false)
+     setshowModalSelectBowler(false)
+     setshowModalTeamSelect(true)
+ 
+   }
+
+
+   if( LIVE_MATCH_DATA.showModalMatchSetup==true)
+   {
+    
+     setshowModalSelectBatter(false)
+     setshowModalSelectNS(false)
+     setshowModalSelectBowler(false)
+     setshowModalTeamSelect(false)
+     setshowModalMatchSetup(true)
+
+   }
+
+   if( LIVE_MATCH_DATA.showModalSelectBatter==true)
+   {
+     setshowModalMatchSetup(false)
+     setshowModalSelectNS(false)
+     setshowModalSelectBowler(false)
+     setshowModalTeamSelect(false)
+     setshowModalSelectBatter(true)
+   }
+
+      if( LIVE_MATCH_DATA.showModalSelectNS==true )
+    {
+      setshowModalMatchSetup(false)
+      setshowModalSelectBatter(false)
+      setshowModalSelectBowler(false)
+      setshowModalTeamSelect(false)
+      setshowModalSelectNS(true)
+    }
+
+      if(LIVE_MATCH_DATA.showModalSelectBowler==true )
+    {
+      setshowModalMatchSetup(false)
+      setshowModalSelectBatter(false)
+      setshowModalSelectNS(false)
+      setshowModalTeamSelect(false)
+      setshowModalSelectBowler(true)
+    }
+
+  
 
     localStorage.setItem('LIVE_MATCH_DATA',JSON.stringify(LIVE_MATCH_DATA));
+    if(inningNo===2)
+    localStorage.setItem('MATCH_STATUS','LIVE, '+winningMessage)
+    if(inningNo===2 && showModalScorecard === true)
+    localStorage.setItem('MATCH_STATUS','COMPLETED, '+winningMessage)
+   
+
+    saveMatchScore();
+    set_matchStatus();
+
+  }, [totalRuns,wicketCount,totalOvers,crr,electedTo,tossWon,scoring_team,chessing_team,STRIKER,NSTRIKER,batter1,batter2,CBOWLER,CBOWLER_ID,currentBowlerData,bowler,bowlers,recentOvers,extras,match,teamA,teamB,strikerFlag,batters,inningNo,showModalScorecard,showModalTeamSelect,showModalMatchSetup,showModalSelectBatter,showModalSelectNS,showModalSelectBowler,ground_id,place_id,maxOver,matchStatus,currentRunStack,currentBowlerData,fielderArray])
+
+  const saveMatchScore = () => {
+    setOverlayFlag(true)
+    let params = {
+      match_id : LIVE_MATCH_DATA.match_id,
+      match_score : LIVE_MATCH_DATA,
+      tour_id : LIVE_MATCH_DATA.tour_id,
+      ground_id : LIVE_MATCH_DATA.ground_id,
+      place : LIVE_MATCH_DATA.place_id
+    }
+
+    ApiService.postData(API_NAME.SAVE_MATCH_SCORE,params).then(
+       (resData) => {
+        setOverlayFlag(false)
+          if (resData.statusCode === '00') {
+
+             console.log('==================================='+resData)
+          }
+          else {
+           // Alert('01', resData.message)
+             console.log('==================================')
+          }
 
 
+       }
+    ).catch((err) => {
+      setOverlayFlag(false)
+       console.log('==================================')
 
-  }, [totalRuns,wicketCount,totalOvers,crr,electedTo,tossWon,scoring_team,chessing_team,STRIKER,NSTRIKER,batter1,batter2,CBOWLER,CBOWLER_ID,currentBowlerData,bowler,bowlers,recentOvers,extras,match,teamA,teamB,strikerFlag])
+    });
+ }
+
+  const set_matchStatus = () => {
+
+  let params = {
+    match_id : LIVE_MATCH_DATA.match_id,
+    match_status :  localStorage.getItem('MATCH_STATUS'),
+    tour_id : LIVE_MATCH_DATA.tour_id,
+  }
+
+  ApiService.postData(API_NAME.SET_MATCH_STATUS,params).then(
+     (resData) => {
+
+        if (resData.statusCode === '00') {
+
+           console.log('==================================='+resData)
+        }
+        else {
+         // Alert('01', resData.message)
+           console.log('==================================')
+        }
+
+
+     }
+  ).catch((err) => {
+
+     console.log('==================================')
+
+  });
+}
+
+ const endFinalMatch = () => {
+//24 mar 24
+  setCurrentRunStack([])
+  setcurrentBowlerData([])
+  setBatter1([])
+  setBatter2([])
+  setBowler([])
+  //24 mar 24
+  localStorage.setItem('MATCH_STATUS',"COMPLETED, "+ winningMessage)
+  let data =  JSON.parse(localStorage.getItem('LIVE_MATCH_DATA'))
+  data.matchStatus = "COMPLETED, "+ winningMessage
+
+  set_matchStatus();
+  
+  let params = {
+    match_id : JSON.parse(localStorage.getItem('LIVE_MATCH_DATA')).match_id,
+    match_score : data,//JSON.parse(localStorage.getItem('LIVE_MATCH_DATA')),
+    tour_id : JSON.parse(localStorage.getItem('LIVE_MATCH_DATA')).tour_id,
+    ground_id : JSON.parse(localStorage.getItem('LIVE_MATCH_DATA')).ground_id,
+    place : JSON.parse(localStorage.getItem('LIVE_MATCH_DATA')).place_id,
+  }
+
+  ApiService.postData(API_NAME.END_MATCH,params).then(
+     (resData) => {
+   
+        if (resData.statusCode === '00') {
+
+           console.log('==================================='+resData)
+           setshowModalScorecard(false)
+           history('/home/all-tournaments')
+        }
+        else {
+         // Alert('01', resData.message)
+           console.log('==================================')
+        }
+
+
+     }
+  ).catch((err) => {
+   
+     console.log('==================================')
+
+  });
+}
 
   return (
     <>
+      <Loading loading={overlayFlag} background="" loaderColor=""></Loading>;
       <ToastContainer />
       <Row>
         <nav class="navbar navbar-expand-lg navbar-dark bg-primary rounded-1 mt-4 scorer" >
@@ -3662,7 +4206,7 @@ debugger;
               </span>
             </button>
             <span style={{ marginLeft: '2vh', fontWeight: '600', fontSize: '2vh' }}>{scoring_team} </span>
-            {inningNo === 1 ? <h5 style={{ float: 'right', marginRight: '2rem' }}>  {totalRuns}/{wicketCount} ({totalOvers})</h5> : <h5 style={{ float: 'right', marginRight: '2rem' }}>  {match.inning1.runs}/{match.inning1.wickets} ({match.inning1.overs})</h5>}
+            {inningNo === 1 ? <h5 style={{ float: 'right', marginRight: '2rem' }}>  {totalRuns}/{wicketCount} ({totalOvers} / {maxOver})</h5> : <h5 style={{ float: 'right', marginRight: '2rem' }}>  {match.inning1.runs}/{match.inning1.wickets} ({match.inning1.overs})</h5>}
 
           </div>
 
@@ -3735,7 +4279,7 @@ debugger;
                         <path d="M7.92128 12.0129H7.93028" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
                       </svg>
                     </span>
-                    
+
                   </button> */}
 
                     <SplitButton
@@ -3864,9 +4408,9 @@ debugger;
           <button class="btn btn-light btn-sm rounded-pill" style={{ fontSize: '2.2vh', marginLeft: '1.2vh', height: '8vh', width: '8vh', marginRight: '2vh', marginBottom: '2vh' }} onClick={() => handleRun(1, 'false')}>1</button>
           <button class="btn btn-light btn-sm rounded-pill" style={{ fontSize: '2.2vh', marginLeft: '1.2vh', height: '8vh', width: '8vh', marginRight: '2vh', marginBottom: '2vh' }} onClick={() => handleRun(2, 'false')}>2</button>
           <button class="btn btn-light btn-sm rounded-pill" style={{ fontSize: '2.2vh', marginLeft: '1.2vh', height: '8vh', width: '8vh', marginRight: '2vh', marginBottom: '2vh' }} onClick={() => handleRun(3, 'false')}>3</button>
-          <button class="btn btn-light btn-sm rounded-pill" style={{ fontSize: '2.2vh', marginLeft: '1.2vh', height: '8vh', width: '8vh', marginRight: '2vh', marginBottom: '2vh' }} onClick={() => handleRun(4, 'false')}>4</button>
-          <button class="btn btn-light btn-sm rounded-pill" style={{ fontSize: '2.2vh', marginLeft: '1.2vh', height: '8vh', width: '8vh', marginRight: '2vh', marginBottom: '2vh' }} onClick={() => handleRun(6, 'false')}>6</button>
-          <button class="btn btn-light btn-sm rounded-pill" style={{ fontSize: '2.2vh', marginLeft: '1.2vh', height: '8vh', width: '8vh', marginRight: '2vh', marginBottom: '2vh' }} onClick={() => showEditRR()}>5+</button>
+          <button class="btn btn-primary btn-sm rounded-pill" style={{ fontSize: '2.2vh', marginLeft: '1.2vh', height: '8vh', width: '8vh', marginRight: '2vh', marginBottom: '2vh' }} onClick={() => handleRun(4, 'false')}>4</button>
+          <button class="btn btn-primary btn-sm rounded-pill" style={{ fontSize: '2.2vh', marginLeft: '1.2vh', height: '8vh', width: '8vh', marginRight: '2vh', marginBottom: '2vh' }} onClick={() => handleRun(6, 'false')}>6</button>
+          <button class="btn btn-success btn-sm rounded-pill" style={{ fontSize: '2.2vh', marginLeft: '1.2vh', height: '8vh', width: '8vh', marginRight: '2vh', marginBottom: '2vh' }} onClick={() => showEditRR()}>5+</button>
 
 
           <button class="btn btn-dark btn-sm rounded-pill" style={{ fontSize: '1.3vh', marginLeft: '1.2vh', height: '8vh', width: '8vh', fontWeight: 'bold', marginRight: '2vh', marginBottom: '2vh' }} onClick={() => showEditWide()}>WIDE</button>
@@ -3905,7 +4449,7 @@ debugger;
   <div class="header-title">
                     <h6 class="card-title">Current Over</h6>
                   </div>
-                 
+
   </div>
   <div class="card-body" style={{ padding: '1.5rem 1rem', overflow: 'auto', whiteSpace: 'nowrap' }}>
 
@@ -3925,19 +4469,19 @@ debugger;
         return (<button class='btn btn-danger btn-sm rounded-pill' style={{ height: '6vh', width: '6vh', marginLeft: '1vh', marginTop: '1vh', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}><div style={{ marginTop: '-8.2vh', color: 'black', position: 'absolute', fontSize: '0.75rem' }}>{run.split('+')[1]}</div><div>{run.split('+')[0]}</div><div style={{ marginTop: '8.2vh', color: 'black', position: 'absolute', fontSize: '0.75rem' }}>{run.split('+')[2]}</div></button>)
       }
       else if (run.includes('wd')) {
-        return (<button class='btn btn-dark btn-sm rounded-pill' style={{ height: '6vh', width: '6vh', marginLeft: '1vh', marginTop: '1vh' }}><div>{run.split('wd')[1]}</div><div style={{ marginLeft: '-1.2vh', marginTop: '2vh', color: 'black', position: 'absolute', fontSize: '0.75rem', marginTop: '10px' }}>WD</div></button>)
+        return (<button class='btn btn-dark btn-sm rounded-pill' style={{ height: '6vh', width: '6vh', marginLeft: '1vh', marginTop: '1vh' }}><div>{run.split('wd')[1]}</div><div style={{ marginLeft: '-0.2vh', marginTop: '1.6vh', color: 'black', position: 'absolute', fontSize: '0.75rem', }}>WD</div></button>)
       }
       else if (run.includes('lb')) {
-        return (<button class='btn btn-dark btn-sm rounded-pill' style={{ height: '6vh', width: '6vh', marginLeft: '1vh', marginTop: '1vh' }}><div>{run.split('lb')[1]}</div><div style={{ marginLeft: '-0.6vh', marginTop: '2vh', color: 'black', position: 'absolute', fontSize: '0.75rem', marginTop: '10px' }}>LB</div></button>)
+        return (<button class='btn btn-dark btn-sm rounded-pill' style={{ height: '6vh', width: '6vh', marginLeft: '1vh', marginTop: '1vh' }}><div>{run.split('lb')[1]}</div><div style={{ marginLeft: '0vh', marginTop: '1.6vh', color: 'black', position: 'absolute', fontSize: '0.75rem',  }}>LB</div></button>)
       }
       else if (run.includes('bye')) {
-        return (<button class='btn btn-dark btn-sm rounded-pill' style={{ height: '6vh', width: '6vh', marginLeft: '1vh', marginTop: '1vh' }}><div>{run.split('bye')[1]}</div><div style={{ marginLeft: '-0.6vh', marginTop: '2vh', color: 'black', position: 'absolute', fontSize: '0.75rem', marginTop: '10px' }}>BYE</div></button>)
+        return (<button class='btn btn-dark btn-sm rounded-pill' style={{ height: '6vh', width: '6vh', marginLeft: '1vh', marginTop: '1vh' }}><div>{run.split('bye')[1]}</div><div style={{ marginLeft: '-0.2vh', marginTop: '1.6vh', color: 'black', position: 'absolute', fontSize: '0.75rem',  }}>BYE</div></button>)
       }
       else if (run.includes('nb')) {
-        return (<button class='btn btn-dark btn-sm rounded-pill' style={{ height: '6vh', width: '6vh', marginLeft: '1vh', marginTop: '1vh' }}><div>{run.split('nb')[1]}</div><div style={{ marginLeft: '-0.6vh', marginTop: '2vh', color: 'black', position: 'absolute', fontSize: '0.75rem', marginTop: '10px' }}>NB</div></button>)
+        return (<button class='btn btn-dark btn-sm rounded-pill' style={{ height: '6vh', width: '6vh', marginLeft: '1vh', marginTop: '1vh' }}><div>{run.split('nb')[1]}</div><div style={{ marginLeft: '0px', marginTop: '1.6vh', color: 'black', position: 'absolute', fontSize: '0.75rem',}}>NB</div></button>)
       }
 
-      // <button class='btn btn-light btn-sm rounded-pill' style={{ height: '6vh', width: '6vh',marginLeft:'1vh',marginTop:'1vh' }}><div >{run}</div></button> 
+      // <button class='btn btn-light btn-sm rounded-pill' style={{ height: '6vh', width: '6vh',marginLeft:'1vh',marginTop:'1vh' }}><div >{run}</div></button>
 
       // run==='0' || run === '1' || run ==='2' ? <button class='btn btn-light btn-sm rounded-pill' style={{ fontSize: '2.5vh', height: '6vh', width: '6vh',marginLeft:'1vh',marginTop:'1vh' }}><div >{run}</div></button> : '',
       //run==='wd' ? <button class='btn btn-dark btn-sm rounded-pill' style={{ fontSize: '2.5vh', height: '6vh', width: '6vh',marginLeft:'1vh',marginTop:'1vh' }}><div >{run}</div></button> : '',
@@ -3995,7 +4539,7 @@ debugger;
                       return (<button class='btn btn-dark btn-sm rounded-pill' style={{ height: '6vh', width: '6vh', marginLeft: '1vh', marginTop: '1vh' }}><div>{run.split('nb')[1]}</div><div style={{ marginLeft: '-0.6vh', marginTop: '2vh', color: 'black', position: 'absolute', fontSize: '0.75rem', marginTop: '10px' }}>NB</div></button>)
                     }
 
-                    // <button class='btn btn-light btn-sm rounded-pill' style={{ height: '6vh', width: '6vh',marginLeft:'1vh',marginTop:'1vh' }}><div >{run}</div></button> 
+                    // <button class='btn btn-light btn-sm rounded-pill' style={{ height: '6vh', width: '6vh',marginLeft:'1vh',marginTop:'1vh' }}><div >{run}</div></button>
 
                     // run==='0' || run === '1' || run ==='2' ? <button class='btn btn-light btn-sm rounded-pill' style={{ fontSize: '2.5vh', height: '6vh', width: '6vh',marginLeft:'1vh',marginTop:'1vh' }}><div >{run}</div></button> : '',
                     //run==='wd' ? <button class='btn btn-dark btn-sm rounded-pill' style={{ fontSize: '2.5vh', height: '6vh', width: '6vh',marginLeft:'1vh',marginTop:'1vh' }}><div >{run}</div></button> : '',
@@ -4013,7 +4557,7 @@ debugger;
 
           </div>
 
-  
+
 
         </Col>
       </Row>
@@ -4043,18 +4587,24 @@ debugger;
             <div class="tab-pane fade show active" id="team1" role="tabpanel" aria-labelledby="nav-home-tab" >
               <ListGroup defaultActiveKey="#link1">
                 <ListGroup.Item action href="#link1" variant='light'>
-                  (0 players selected)
+                  ({teamA.length} players selected)
                 </ListGroup.Item>
 
-                {teamA.map((item, idx) => {
-                  return (
-                    <ListGroup.Item className="d-flex justify-content-between align-items-center" >
-                      {item.player_name}
-                      <svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" className="text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" onClick={() => addPlayersT1(item)}>
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-                      </svg>
-                    </ListGroup.Item>
-                  )
+                {teamA_Initial.map((item, idx) => {
+                
+                  let indexData = teamA.findIndex(x => x.player_id ===item.player_id);
+                  if(indexData==-1)
+                  {
+                    return (
+                      <ListGroup.Item className="d-flex justify-content-between align-items-center" >
+                        {item.player_name}
+                        <svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" className="text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" onClick={() => addPlayersT1(item)}>
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                        </svg>
+                      </ListGroup.Item>
+                    )
+                  }
+                  
                 })}
 
 
@@ -4065,18 +4615,23 @@ debugger;
             <div class="tab-pane fade show" id="team2" role="tabpanel" aria-labelledby="nav-home-tab" >
               <ListGroup defaultActiveKey="#link1">
                 <ListGroup.Item action href="#link1" variant='light'>
-                  (0 players selected)
+                  ({teamB.length} players selected)
                 </ListGroup.Item>
 
-                {teamB.map((item, idx) => {
-                  return (
-                    <ListGroup.Item className="d-flex justify-content-between align-items-center">
-                      {item.player_name}
-                      <svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" className="text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" onClick={() => addPlayersT2(item)}>
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-                      </svg>
-                    </ListGroup.Item>
-                  )
+                {teamB_Initial.map((item, idx) => {
+                  
+                  let indexData = teamB.findIndex(x => x.player_id ===item.player_id);
+                  if(indexData==-1)
+                  {
+                    return (
+                      <ListGroup.Item className="d-flex justify-content-between align-items-center" >
+                        {item.player_name}
+                        <svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" className="text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" onClick={() => addPlayersT2(item)}>
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                        </svg>
+                      </ListGroup.Item>
+                    )
+                  }
                 })}
 
 
@@ -4286,7 +4841,7 @@ debugger;
 
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="primary" onClick={() => NSTRIKER === 'Select Non-Striker' ? showEditSelectNS() : setshowModalSelectBatter(false)}>Done</Button>
+          <Button variant="primary" onClick={() => NSTRIKER === 'Select Non-Striker' ? showEditSelectNS() : (setshowModalSelectBatter(false),handleBatter1Blur(STRIKER))}>Done</Button>
         </Modal.Footer>
       </Modal>
 
@@ -4338,7 +4893,7 @@ debugger;
         </Modal.Body>
         <Modal.Footer>
 
-          <Button variant="primary" onClick={() => CBOWLER === 'Select Bowler' ? showEditSelectBowler() : setshowModalSelectNS(false)}>Done</Button>
+          <Button variant="primary" onClick={() => CBOWLER === 'Select Bowler' ? showEditSelectBowler() : (setshowModalSelectNS(false) , handleBatter2Blur(NSTRIKER))}>Done</Button>
         </Modal.Footer>
       </Modal>
 
@@ -4508,7 +5063,7 @@ debugger;
                   </Form.Select>
                 </Form.Group>
               </Col>
-             
+
 
 
             </Row>
@@ -4562,7 +5117,8 @@ debugger;
             >
               <option value="">Select Runs by</option>
               <option value="bat">From Bat</option>
-              <option value="bleg">From Bye/Leg Bye</option>
+              <option value="bleg">From Leg Bye</option>
+              <option value="bbey">From Bye</option>
             </Form.Select>
             <div class="mb-3 form-check" id="boundaryparent" style={{ float: 'right', marginTop: '0.1rem', display: 'none' }}>
               <input type="checkbox" class="form-check-input" id="boundarycheck" />
@@ -4622,7 +5178,7 @@ debugger;
         <Modal.Body>
           <ListGroup>
             <ListGroup.Item style={{ padding: '0px 0px 0px 10px' }} className="d-flex justify-content-between align-items-center">
-              Batter Out {scoring_team} : {team_1}
+              Batter Out 
 
               <Form.Group className="form-group" style={{ margin: '0px' }}>
 
@@ -4669,12 +5225,12 @@ debugger;
 
 
                   <option value="">Select</option>
-                  {batterOuts === batter1.name ? batter1.onStrike === true ? <option value="caught">Caught</option> : '' : batter2.onStrike === true ? <option value="caught">Caught</option> : ''}
-                  {batterOuts === batter1.name ? batter1.onStrike === true ? <option value="lbw">LBW</option> : '' : batter2.onStrike === true ? <option value="lbw">LBW</option> : ''}
+                  {batterOuts === batter1.name  ? batter1.onStrike === true ? <option value="caught">Caught</option> : '' : batter2.onStrike === true ? <option value="caught">Caught</option> : ''}
+                  {batterOuts  === batter1.name  ? batter1.onStrike === true ? <option value="lbw">LBW</option> : '' : batter2.onStrike === true ? <option value="lbw">LBW</option> : ''}
                   <option value="runout">Run out</option>
-                  {batterOuts === batter1.name ? batter1.onStrike === true ? <option value="stumped">Stumped</option> : '' : batter2.onStrike === true ? <option value="stumped">Stumped</option> : ''}
-                  {batterOuts === batter1.name ? batter1.onStrike === true ? <option value="hit">Hit wicket</option> : '' : batter2.onStrike === true ? <option value="hit">Hit wicket</option> : ''}
-                  {batterOuts === batter1.name ? batter1.onStrike === true ? <option value="bowled">Bowled</option> : '' : batter2.onStrike === true ? <option value="bowled">Bowled</option> : ''}
+                  {batterOuts  === batter1.name  ? batter1.onStrike === true ? <option value="stumped">Stumped</option> : '' : batter2.onStrike === true ? <option value="stumped">Stumped</option> : ''}
+                  {batterOuts  === batter1.name  ? batter1.onStrike === true ? <option value="hit">Hit wicket</option> : '' : batter2.onStrike === true ? <option value="hit">Hit wicket</option> : ''}
+                  {batterOuts  === batter1.name  ? batter1.onStrike === true ? <option value="bowled">Bowled</option> : '' : batter2.onStrike === true ? <option value="bowled">Bowled</option> : ''}
                   <option value="timeout">Timeout</option>
                   <option value="obstructing">Obstructing the field</option>
                   {/* <option value="retired">Retired</option> */}
@@ -4783,7 +5339,7 @@ debugger;
                 <Form.Select onChange={runsScoredFlag} disabled={dismissalTypes === 'runout' || dismissalTypes === 'obstructing' ? false : true} required style={{ border: '0px', textAlign: 'right' }} className="form-select" id="runScored"
 
                 >
-                  
+
                   <option value="0" selected>0</option>
                   <option value="1">1</option>
                   <option value="2">2</option>
@@ -5040,14 +5596,55 @@ debugger;
                     </tbody>
                   </table>
                 </div>
+
+                <div className='score-board-innings'>
+                  <div></div>
+                  <div>Most Valuable Player(MVP)</div>
+                  <div>
+                   
+                  </div>
+                </div>
+                {mvpMaster.length == 0 ? <Button variant="primary" onClick={getMOM} style={{width:'100%'}}>Fetch MVP</Button>:''}
+               {mvpMaster.length>0? <div className='sb-batting'>
+                  <table>
+                    <thead>
+                      <tr>
+                        <td className='score-types padding-left'>Players</td>
+                        <td className='score-types'>Points</td>
+                        <td className='score-types text-center'></td>
+                        <td className='score-types text-center'></td>
+                        <td className='score-types text-center'></td>
+                        <td className='score-types text-center'></td>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {mvpMaster.map((players, i) => {
+                        return (
+                          <tr key={i}>
+                            <td className='score-types padding-left' style={{ fontWeight: 'bold' }}>{i+1}. {players.name}  <p style={{ fontWeight: 'normal' }}>Batting: <b>{players.battingPoint}</b> + Bowling: <b>{players.bowlingPoint}</b> + Fielding: <b>{players.fieldingPoint}</b></p></td>
+                            <td className='score-types'>
+                            <b>{players.point}</b>
+                            </td>
+                            <td className='score-types'></td>
+                            <td className='score-types'></td>
+                            <td className='score-types'></td>
+                          </tr>
+                        )
+                      })}
+                      
+                    </tbody>
+                  </table>
+                </div> :''}
+               
               </div>
+              
             )}
 
           </div>
 
         </Modal.Body>
         <Modal.Footer>
-          {hasMatchEnded === false ? <Button variant="warning" onClick={end2ndInnings}>Start 2nd Innings</Button> : <Button variant="warning" onClick={finalMatchEnd}>End Match</Button>}
+          {hasMatchEnded === false ? <Button variant="warning" onClick={end2ndInnings}>Start 2nd Innings</Button> : <div> <Button variant="warning" onClick={finalMatchEnd}>End Match</Button> </div>}
         </Modal.Footer>
       </Modal>
 

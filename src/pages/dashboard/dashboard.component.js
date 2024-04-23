@@ -9,7 +9,8 @@ import Chart from "react-apexcharts";
 import Card from "../../components/card/card";
 import Progress from "../../components/progress/progress";
 import * as SettingSelector from "../../store/setting/selectors";
-
+import Alert from '../../components/toast/toast'
+import { ToastContainer } from 'react-toastify';
 
 const Dashboard = () => {
 
@@ -132,6 +133,8 @@ const Dashboard = () => {
   
 
   return (
+    <>
+         <ToastContainer/>
     <Fragment>
       <Row >
         <Col lg="3" md="6">
@@ -297,6 +300,7 @@ const Dashboard = () => {
             </Col>
       </Row>
     </Fragment>
+    </>
   )
 }
 

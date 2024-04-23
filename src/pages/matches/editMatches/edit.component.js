@@ -419,7 +419,7 @@ const EditMatches = (props) => {
         setTeamBPlace(item.team_place)
         var dataArray = []
         item.playerData.forEach(element => {
-            dataArray.push({value:element.player_id,label:element.player_name.replace(/\w\S*/g, function (txt) { return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase(); })})
+            dataArray.push({value:element.player_id,label:element.player_name?.replace(/\w\S*/g, function (txt) { return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase(); })})
         });
         console.log(dataArray)
         setPlayerB(dataArray)
@@ -761,7 +761,7 @@ const EditMatches = (props) => {
 
         });
     
-        history('/home/edit-score')
+        history('/home/all-tournaments')
 
 
      }
@@ -953,7 +953,7 @@ const EditMatches = (props) => {
                 </div>
             </Row>
 
-            <Form onSubmit={onScheduleMatch.bind(this)} >
+            <Form>
                 <Row>
                     <Col md="6" className="mb-3">
                         <Form.Group className="form-group">
@@ -1050,7 +1050,7 @@ const EditMatches = (props) => {
                     <Col>
 
                         <Button variant="btn btn-primary" style={{ float: 'right', marginBottom: '10px', width: '48%', marginRight: '2%' }} type="submit">Start Match</Button>
-                        <Button variant="btn btn-warning" style={{ float: 'right', marginBottom: '10px', width: '48%', marginRight: '2%' }} type="submit">Schedule Match</Button>
+                        <Button variant="btn btn-warning" style={{ float: 'right', marginBottom: '10px', width: '48%', marginRight: '2%' }} type="submit" onClick={onScheduleMatch.bind(this)}>Schedule Match</Button>
                     </Col>
                 </Row>
 
@@ -1124,7 +1124,7 @@ const EditMatches = (props) => {
                                                 <Accordion.Body>
                                                     {item.playerData.map((item1, idx) => {
                                                         return (
-                                                            <span class="badge rounded-pill bg-info" style={{ marginRight: '5px' }} key={idx}>{item1.player_name.replace(/\w\S*/g, function (txt) { return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase(); })}</span>
+                                                            <span class="badge rounded-pill bg-info" style={{ marginRight: '5px' }} key={idx}>{item1.player_name?.replace(/\w\S*/g, function (txt) { return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase(); })}</span>
                                                             
                                                         )
                                                     })}

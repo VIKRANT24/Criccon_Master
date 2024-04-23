@@ -275,7 +275,8 @@ const VerticalNav = memo((props) => {
                     </Accordion.Collapse>
                 </Accordion.Item>
                 <li><hr className="hr-horizontal" /></li>
-                <li className="nav-item static-item">
+                {sessionStorage.getItem('user_role') === '1' ||  sessionStorage.getItem('user_role') === '3' ?   <div>
+              <li className="nav-item static-item">
                     <Link className="nav-link static-item disabled" to="#" tabIndex="-1">
                         <span className="default-icon">Settings</span>
                         <span className="mini-icon">-</span>
@@ -431,6 +432,7 @@ const VerticalNav = memo((props) => {
                         <span className="item-name">Reset Password</span>
                     </Link>
                 </li>
+                </div> :''}
             </Accordion>
         </Fragment>
     )

@@ -122,26 +122,37 @@ const AdminAdd = (props)=>{
    };
 
    const options = [
-      { value: 'create', label: 'Create' },
-      { value: 'update', label: 'Update' },
-      { value: 'viewtournament', label: 'View Tournament' },
-      { value: 'mytournaments', label: 'My Tournaments' },
-      { value: 'deletetournament', label: 'Delete Tournament' },
-      { value: 'registeruser', label: 'Register User' },
-      { value: 'userlist', label: 'User List' },
-      { value: 'createsubadmin', label: 'Create Subadmin' },
-      { value: 'viewallsubadmins', label: 'View All Subadmins' },
-      { value: 'resetpassword', label: 'Reset Password' },
-      { value: 'addplayers', label: 'Add Players' },
-      { value: 'viewplayers', label: 'View Players' },
-      { value: 'assignuser', label: 'Assign User' },
-      { value: 'deleteuser', label: 'Delete User' },
-      { value: 'viewmatches', label: 'View Matches' },
-      { value: 'editmatch', label: 'Edit Match' },
-      { value: 'editteam', label: 'Edit Team' },
-      { value: 'managevideos', label: 'Manage Videos' },
-      { value: 'creatematch', label: 'Create Match' },
-      { value: 'viewscorecard', label: 'View Scorecard' },
+      // { value: 'create', label: 'Create' },
+      // { value: 'update', label: 'Update' },
+      // { value: 'viewtournament', label: 'View Tournament' },
+      // { value: 'mytournaments', label: 'My Tournaments' },
+      // { value: 'deletetournament', label: 'Delete Tournament' },
+      // { value: 'registeruser', label: 'Register User' },
+      // { value: 'userlist', label: 'User List' },
+      // { value: 'createsubadmin', label: 'Create Subadmin' },
+      // { value: 'viewallsubadmins', label: 'View All Subadmins' },
+      // { value: 'resetpassword', label: 'Reset Password' },
+      // { value: 'addplayers', label: 'Add Players' },
+      // { value: 'viewplayers', label: 'View Players' },
+      // { value: 'assignuser', label: 'Assign User' },
+      // { value: 'deleteuser', label: 'Delete User' },
+      // { value: 'viewmatches', label: 'View Matches' },
+      // { value: 'editmatch', label: 'Edit Match' },
+      // { value: 'editteam', label: 'Edit Team' },
+      // { value: 'managevideos', label: 'Manage Videos' },
+      // { value: 'creatematch', label: 'Create Match' },
+      // { value: 'viewscorecard', label: 'View Scorecard' },
+      { value: 'add-tournament', label: 'Add Tournament' },
+      { value: 'all-tournaments', label: 'View Tournament' },
+      { value: 'my-tournaments', label: 'My Tournament' },
+      { value: 'delete-tournament', label: 'Delete Tournament' },
+      { value: 'add-player', label: 'Add Player' },
+      { value: 'players', label: 'View Players' },
+      { value: 'add-user', label: 'Add Scorer' },
+      { value: 'user', label: 'View Scorer' },
+      { value: 'add-admin', label: 'Add Sub Admin' },
+      { value: 'admin', label: 'View Sub Admin' },
+      { value: 'reset-password', label: 'Reset Password' },
     ];
 
     const handleFileRead = async (e) => {
@@ -164,6 +175,8 @@ const AdminAdd = (props)=>{
          console.log(err)
       });
     }
+
+  ;
    
 
     return(
@@ -213,6 +226,8 @@ const AdminAdd = (props)=>{
         options={options}
       
       />
+
+
                                 </Form.Group>
                                
                                  </Col>

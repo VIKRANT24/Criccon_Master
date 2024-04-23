@@ -1,5 +1,6 @@
-export const API_URL = "http://localhost:8080/api"   //local url
-//export const API_URL = "http://206.189.142.39:8080/api" //remote url
+//export const API_URL = "http://localhost:8080/api"   //local url
+//export const API_URL = "https://206.189.142.39:8080/api" //remote url
+export const API_URL = "http://16.171.18.75:8080/api" //remote url
 
 export const API_NAME = {
     LOGIN : '/tutorials/published',
@@ -17,6 +18,7 @@ export const API_NAME = {
     ADD_PLAYER : '/player/addPlayer',
     PLAYER : '/player/fetchPlayerList',
     EDIT_PLAYER : '/player/editPlayer',
+    PLAYER_STATS : '/player/fetchPlayerStat',
 
     TOURNAMENT_LIST : '/tournament/fetchMyTournament',//'/userMaster/getAllTournaments',
     ADD_TOURNAMENT : '/tournament/addNewTournament',//'/userMaster/addTournament',
@@ -51,5 +53,10 @@ export const API_NAME = {
     ADD_PLAYER:'/player/addPlayer',
     SCHEDULE_MATCH:'/editMatch/scheduleMatch',
     FETCH_MATCH_DETAILS:'/editMatch/fetchAllMatchDetails',
-    FETCH_MATCH_PLAYERS:'/editTeam/fetchMatchPlayes'
+    FETCH_MATCH_PLAYERS:'/editTeam/fetchPlayersForMatch',
+    SAVE_MATCH_SCORE:'/editMatch/matchRecord',
+    FETCH_MATCH_SCORE:'/editMatch/fetchMatchRecord',
+    END_MATCH : '/editMatch/finalMatchRecord',
+    SET_MATCH_STATUS : '/editMatch/setMatchStatus',
+    FETCH_MVP : '/statistics/fetchMVP'
 }

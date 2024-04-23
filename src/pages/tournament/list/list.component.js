@@ -298,7 +298,7 @@ const TournamentList = (props) => {
                     <a class="badge rounded-pill bg-soft-primary text-primary" href="javascript:void(0);"  onClick={() => gotoDetail(item.tour_id,item.squad_limit)}>
                         View
                     </a>
-                    <a class="badge rounded-pill bg-soft-warning text-danger" href="javascript:void(0);" style={{marginLeft:'10px'}} onClick={() => deleteTournament(item.Tournamentid)}>
+                    <a class="badge rounded-pill bg-soft-warning text-danger" href="javascript:void(0);" style={{marginLeft:'10px'}} onClick={() => deleteTournament(item.tour_id)}>
                         Delete
                     </a>
                     </div>

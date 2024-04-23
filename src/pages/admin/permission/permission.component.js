@@ -28,104 +28,71 @@ const AdminPermission = (props) => {
     const [editper, setEditPer] = useState([])
 
     const [defaultper, setDefaultPer] = useState([{
-        name: 'Create',
-        status: 'false'
+        name: 'Add Tournament',
+        status: 'false',
+        val_key:'add-tournament'
 
-    },
-    {
-        name: 'Update',
-        status: 'false'
     },
     {
         name: 'View Tournament',
-        status: 'false'
-
+        status: 'false',
+        val_key:'all-tournaments'
     },
     {
-        name: 'My Tournaments',
-        status: 'false'
+        name: 'My Tournament',
+        status: 'false',
+        val_key:'my-tournaments'
 
     },
     {
         name: 'Delete Tournament',
-        status: 'false'
+        status: 'false',
+        val_key:'delete-tournament'
 
     },
     {
-        name: 'Register User',
-        status: 'false'
-
-    },
-    {
-        name: 'Users list',
-        status: 'false'
-
-    },
-    {
-        name: 'Create Subadmin',
-        status: 'false'
-
-    },
-    {
-        name: 'View All Subadmins',
-        status: 'false'
-
-    },
-    {
-        name: 'Reset Password',
-        status: 'false'
-
-    },
-    {
-        name: 'Add Players',
-        status: 'false'
+        name: 'Add Player',
+        status: 'false',
+        val_key:'add-player'
 
     },
     {
         name: 'View Players',
-        status: 'false'
+        status: 'false',
+        val_key:'players'
 
     },
     {
-        name: 'Assign User',
-        status: 'false'
+        name: 'Add Scorer',
+        status: 'false',
+        val_key:'add-user'
 
     },
     {
-        name: 'Delete User',
-        status: 'false'
+        name: 'View Scorer',
+        status: 'false',
+        val_key:'user'
 
     },
     {
-        name: 'View Matches',
-        status: 'false'
+        name: 'Add Sub Admin',
+        status: 'false',
+        val_key:'add-admin'
 
     },
     {
-        name: 'Edit Match',
-        status: 'false'
+        name: 'View Sub Admin',
+        status: 'false',
+        val_key:'admin'
 
     },
     {
-        name: 'Edit Team',
-        status: 'false'
-
-    },
-    {
-        name: 'Manage Videos',
-        status: 'false'
-
-    },
-    {
-        name: 'Create Match',
-        status: 'false'
-
-    },
-    {
-        name: 'View Scorecard',
-        status: 'false'
+        name: 'Reset Password',
+        status: 'false',
+        val_key:'reset-password'
 
     }
+
     ])
 
   const onPermissionSelect = (name,event)=>{
@@ -151,7 +118,7 @@ const AdminPermission = (props) => {
          {
             var dataArray = [] 
             defaultper.filter(per => {
-              if((location.state.per).includes(per.name.toLowerCase().replace(/\s+/g, '')))
+              if((location.state.per).includes(per.val_key.toLowerCase()))
               {
                per.status = 'true'
               }
@@ -180,7 +147,7 @@ const AdminPermission = (props) => {
         })
         console.log(finalPerArray)
 
-        let updatedPermissions = finalPerArray.map(x => x.name.toLowerCase().replace(/\s+/g, '')).join(", ");
+        let updatedPermissions = finalPerArray.map(x => x.val_key).join(", ");
         console.log(updatedPermissions);
 
 

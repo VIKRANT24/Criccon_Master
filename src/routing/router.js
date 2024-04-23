@@ -29,6 +29,7 @@ const EditTeamsPage = React.lazy(() => import('../pages/matches/editTeams/edit.c
 const EditMatchesPage = React.lazy(() => import('../pages/matches/editMatches/edit.component'));
 const EditPreMatchPage = React.lazy(() => import('../pages/matches/editPreMatch/edit.component'));
 const EditScorePage = React.lazy(() => import('../pages/matches/editScore/edit.component'));
+const UserProfilePage = React.lazy(() => import('../pages/user/profile/profile.component'));
 
 
 
@@ -54,6 +55,7 @@ const routes = [
             {path: '/home/create-matches', element: <ProtectedRoute><EditMatchesPage /></ProtectedRoute>},
             {path: '/home/edit-pre-match', element: <ProtectedRoute><EditPreMatchPage /></ProtectedRoute>},
             {path: '/home/edit-score', element: <ProtectedRoute><EditScorePage /></ProtectedRoute>},
+            {path: '/home/user-profile', element: <ProtectedRoute><UserProfilePage /></ProtectedRoute>},
     ]
     },
 ]

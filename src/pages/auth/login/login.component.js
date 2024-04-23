@@ -18,8 +18,9 @@ import ApiService from '../../../services/service'
 import { API_NAME } from '../../../utils/constants';
 
 //local images
-import auth1 from '../../../assets/images/auth/login.jpg'
+import auth1 from '../../../assets/images/logo/lglogo.png'
 import logo from '../../../assets/images/logo/logo.png'
+
 
 //local css
 import './login.scss'
@@ -82,6 +83,7 @@ const Login = (props) => {
                      sessionStorage.setItem('full_name',resData.data[0].full_name)
                      sessionStorage.setItem('mobile_no',resData.data[0].mobile_no)
                      sessionStorage.setItem('profile_pic',resData.data[0].filename)
+                     sessionStorage.setItem('permissions',resData.data[0].permissions)
                      history('/home/dashboard')
                  }
                  else {
@@ -145,7 +147,7 @@ const Login = (props) => {
                                     </Col>
                                  </Row>
                                  <Form.Group className="d-flex justify-content-center">
-                                    <Button variant="btn btn-primary" type="submit" >Submit form</Button>
+                                    <Button variant="btn btn-primary" type="submit" >Login</Button>
                                  </Form.Group>
                               </Form>
 
@@ -154,7 +156,7 @@ const Login = (props) => {
                      </Col>
                   </Row>
                </Col>
-               <Col md="6" className="d-md-block d-none bg-primary p-0 mt-n1 vh-100 overflow-hidden bgrt_img">
+               <Col md="6" className="d-md-block d-none bg p-0 mt-n1 vh-100 overflow-hidden bgrt_img">
                   <Image src={auth1} className="Image-fluid gradient-main animated-scaleX bgrt_img" alt="images" />
                </Col>
 
