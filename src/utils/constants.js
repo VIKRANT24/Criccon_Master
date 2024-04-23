@@ -1,6 +1,6 @@
 //export const API_URL = "http://localhost:8080/api"   //local url
 //export const API_URL = "https://206.189.142.39:8080/api" //remote url
-export const API_URL = "http://16.171.18.75:8080/api" //remote url
+export const API_URL = "https://16.171.18.75:8080/api" //remote url
 
 export const API_NAME = {
     LOGIN : '/tutorials/published',
